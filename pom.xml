@@ -33,6 +33,12 @@
 			<artifactId>spring-cloud-starter-eureka</artifactId>
 		</dependency>
 		
+		<!-- mongodb -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-mongodb</artifactId>
+		</dependency>
+		
 		<!-- config -->
 		<dependency>
 			<groupId>org.springframework.cloud</groupId>
