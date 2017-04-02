@@ -1,10 +1,7 @@
-//dev host
-//var hostUri = "http://10.20.11.225:8188/webii"
-//stg host
-//var hostUri = "http://ff-app-sg-stg1.paic.com.cn/webii"
-//prd host
-//var hostUri = "http://ff-app-sg.paic.com.cn/webii"
-var hostUri = 'http://'+window.location.host + '/webii';
+var hostUri = 'http://'+window.location.host;
+var getVideoInfoByPageUrl = hostUri + "/getVideoInfoByPage";
+var eachPageNum = 2;
+
 var getStatByKeyAndTriggerAndBaseInfoUrl = hostUri + "/fsg/strategy/getStatByKeyAndTriggerAndBaseInfo";
 var getStatByKeyUrl = hostUri + "/fsg/strategy/getStatByKey";
 var getStatByKeyAndFieldUrl = hostUri + "/fsg/strategy/getStatByKeyAndField";

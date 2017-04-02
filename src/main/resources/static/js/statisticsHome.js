@@ -1,7 +1,7 @@
 
 var triggerModifyJqObj = null
 
-$(document).ready(function  () {
+$(document).ready(function() {
   var makeArrayForEach = function(word, size){
     var i, result = [];
     for(i = 0; i < size; i++){
@@ -9,34 +9,28 @@ $(document).ready(function  () {
     }
     return result;
   }
-  //stype=1 知识策略 stype=2 应用策略。page页数，1开始
-  function ajaxMainData(stype,page,limit){
+
+  refreshMainData();
+  
+  // page页数，1开始
+  function ajaxMainData(pageNo, limit){
 	var result;
-    var getMainDataUrl = hostUri;
-    if (stype == 1) {
-      getMainDataUrl = hostUri + "/fsg/strategy/getKnowledgeStrategyByPage"
-    }else if (stype == 2) {
-      getMainDataUrl = hostUri + "/fsg/strategy/getAppStrategyByPage"
-    }else{
-      alert("UnkownStrategyType,only 1 and 2 is available")
-      return ;
-    }
     $.ajax({
         type:'POST',
-        url:getMainDataUrl,
+        url:getVideoInfoByPageUrl,
         data:{
-          offset : page,
+          pageNo : pageNo,
           limit : limit
         },
         async:false,
         dataType:'json',
         success:function  (data) {
            var responseObj = eval(data);
-           if(responseObj.code==0){
+           if(responseObj.code == 200){
         	   result = responseObj;
         	   return ;
            }else{
-              alert("get Main Data Error,Msg:" + responseObj.msg)
+              alert("get Main Data Error,Msg:" + responseObj.message)
            }
         }
      });
@@ -49,7 +43,7 @@ $(document).ready(function  () {
   }
   function changeMainHtml(jsonData){
     $('#main').html('')
-    $('#strategyMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+    $('#statisticsMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
   }
   function clearKnowlegeStrategyModal(nameInputEnableFlag){
     $('#knowledgeForm')[0].reset();
@@ -98,21 +92,14 @@ $(document).ready(function  () {
         }
      });
   }
-  function refreshMainData(stype){
-    var firstReturnData = ajaxMainData(stype,1,20);
+  function refreshMainData(){
+    var firstReturnData = ajaxMainData(1, 2);
     if (firstReturnData != undefined) {
-      firstReturnData.stype = stype
-      if (stype == 1) {
-        tabActiveChange($('#knowledgeManager'))
-      }else{
-        tabActiveChange($('#applicationManager'))
-      }
+      tabActiveChange($('#statisticsMain'))
       $('#main').html('');
-      $('#strategyMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
     }
   }
-
-  refreshMainData(1);
   
   $('#knowledgeStrategyExpi').bind('input propertychange', function() {  
 	    var tvalue = $(this).val();
@@ -140,8 +127,8 @@ $(document).ready(function  () {
     $('#applicationSubType').val(0);
     $('#applicationModal').modal();
   })
-  $(document).on('click','#knowledgeManager',function(){
-    var returnData = ajaxMainData(1,1,20);
+  $(document).on('click','#statisticsMain',function(){
+    var returnData = ajaxMainData(1, eachPageNum);
     if (returnData != undefined) {
       returnData.stype = 1
       changeMainHtml(returnData)
@@ -149,7 +136,7 @@ $(document).ready(function  () {
     }
   })
   $(document).on('click','#applicationManager',function(){
-    var returnData = ajaxMainData(2,1,20);
+    var returnData = ajaxMainData(1, eachPageNum);
     if (returnData != undefined) {
       returnData.stype = 2
       changeMainHtml(returnData)
@@ -242,7 +229,7 @@ $(document).ready(function  () {
              var responseObj = eval(data);
              if(responseObj.code==0){
                 alert("已成功删除");
-                refreshMainData(1);
+                refreshMainData();
              }else{
                 alert("get Main Data Error,Msg:" + responseObj.msg)
              }
@@ -287,16 +274,16 @@ $(document).ready(function  () {
   });
   $(document).on('click','.knowlegePaginationBtn',function(){
     pageNum = $(this).data('index')
-    var returnData = ajaxMainData(1,pageNum,20);
+    var returnData = ajaxMainData(pageNum, eachPageNum);
     if (returnData != undefined) {
       returnData.stype = 1
       changeMainHtml(returnData)
-      tabActiveChange($('#knowledgeManager'))
+      tabActiveChange($('#statisticsMain'))
     }
   });
   $(document).on('click','.applicationPaginationBtn',function(){
     pageNum = $(this).data('index')
-    var returnData = ajaxMainData(2,pageNum,20);
+    var returnData = ajaxMainData(pageNum, eachPageNum);
     if (returnData != undefined) {
       returnData.stype = 2
       changeMainHtml(returnData)
@@ -444,7 +431,7 @@ $(document).ready(function  () {
          var responseObj = eval(data);
          if(responseObj.code==0){
             alert(msg + "成功！");
-            refreshMainData(1);
+            refreshMainData();
             $('#knowledgeModal').modal('hide');
          }else{
             alert(msg + "失败, Msg:" + responseObj.msg + ", 原因：" + responseObj.data)
@@ -485,7 +472,7 @@ $(document).ready(function  () {
          var responseObj = eval(data);
          if(responseObj.code==0){
             alert(msg + "成功！");
-            refreshMainData(2);
+            refreshMainData();
             $('#applicationModal').modal('hide');
          }else{
             alert(msg + "失败,Msg:" + responseObj.msg)
@@ -493,4 +480,6 @@ $(document).ready(function  () {
       }
    });
   })
+  
+  
 });
