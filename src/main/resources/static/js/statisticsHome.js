@@ -12,12 +12,39 @@ $(document).ready(function() {
 
   refreshMainData();
   
-  // page页数，1开始
+  // 获取所有渠道
+  function getChannelList() {
+	$.ajax({
+        type:"GET",
+        url: getChannelListUrl,
+        data:{},
+        dataType:"json",
+        success: function(data){
+            var responseObj = eval(data);
+            if(responseObj.code == 200){
+            	$("#channelList").append($("#channelListTmpl").tmpl(data.body));
+//            	$('#getAppList').selectpicker('refresh');
+//            	$('#getAppListMulti').data('mutishowData',data.data);
+//            	//隐藏银行多选框
+//            	$('.section').hide();
+//        		$("#getAppListMulti").selectpicker('hide');
+//        		$('#getAppVerList').selectpicker('hide');
+//            	//加载appVersionList
+//            	var appId = $('#getAppList').val();
+//            	getAppVersionList(appId);
+            }else{
+               alert("get Channel Data Error,Msg:" + responseObj.message)
+            }
+        }
+    });
+  }
+  
+  // 获取分页统计数据，page页数，1开始
   function ajaxMainData(pageNo, limit){
 	var result;
     $.ajax({
-        type:'POST',
-        url:getVideoInfoByPageUrl,
+        type:'GET',
+        url: getVideoInfoByPageUrl,
         data:{
           pageNo : pageNo,
           limit : limit
@@ -30,7 +57,7 @@ $(document).ready(function() {
         	   result = responseObj;
         	   return ;
            }else{
-              alert("get Main Data Error,Msg:" + responseObj.message)
+              alert("get Main Data Error, Msg:" + responseObj.message)
            }
         }
      });
@@ -69,64 +96,25 @@ $(document).ready(function() {
     $('#triggerOpe').append("<option><=</option>");
     $('#triggerOpe').append("<option>>=</option>");
   }
-  function setApplicationDatas(){
-    $('#triggerApp').html('');
-    var getAllAppUrl = hostUri;
-    getAllAppUrl = hostUri + "/fsg/strategy/getAllAppStrategy"
-    $.ajax({
-        type:'GET',
-        url:getAllAppUrl,
-        dataType:'json',
-        async:false,
-        success:function  (data) {
-           var responseObj = eval(data);
-           if(responseObj.code==0){
-             strategys = responseObj['data']['strategy'];
-             for(var i=0; i<strategys.length; i++)
-             {
-                $('#triggerApp').append("<option>" + strategys[i]['name'] + "</option>");
-             }
-           }else{
-              alert("get All appData Error,Msg:" + responseObj.msg)
-           }
-        }
-     });
-  }
   function refreshMainData(){
-    var firstReturnData = ajaxMainData(1, 2);
+	getChannelList();
+    var firstReturnData = ajaxMainData(1, eachPageNum);
     if (firstReturnData != undefined) {
       tabActiveChange($('#statisticsMain'))
       $('#main').html('');
       $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
     }
   }
-  
-  $('#knowledgeStrategyExpi').bind('input propertychange', function() {  
-	    var tvalue = $(this).val();
-	    if(tvalue.length != 0 && tvalue.match(/^[0-9]+$/) == null){
-	      alert("只能输入数字");
-	      $(this).val(tvalue.substring(0,tvalue.length - 1));
-	      return ;
-	    }
-	    if (tvalue.length > 6){
-	      $(this).val(tvalue.substring(0,tvalue.length - 1));
-	    }
-	    var perStat = $("input[name=persistentStatus]:checked").val();
-	    if(perStat == 1){
-		    if(tvalue >= 1800){
-		    	$("#persistentStatusDesc").html("");
-		    }else{
-		    	$("#persistentStatusDesc").html("数据过期时间必须大于或等于30分钟才能持久化！");
-		    }
-	    }
-	    
-	  });
-  
-  $(document).on('click','#addApplicationBtn',function(){
-    clearApplicationStrategyModal(false);
-    $('#applicationSubType').val(0);
-    $('#applicationModal').modal();
+  $(document).on('click','#searchStatistics',function(){
+	  var searchTitle = $('#searchTitle').val();
+	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle);
+	  if (firstReturnData != undefined) {
+	      tabActiveChange($('#statisticsMain'))
+	      $('#main').html('');
+	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+	  }
   })
+  
   $(document).on('click','#statisticsMain',function(){
     var returnData = ajaxMainData(1, eachPageNum);
     if (returnData != undefined) {
@@ -157,11 +145,6 @@ $(document).ready(function() {
    })
   $('#triggerModal').on('show.bs.modal', function () {
    $('#knowledgeModal').modal('hide')
-  })
-  $(document).on('click','#addKnowledgeBtn',function(){
-    clearKnowlegeStrategyModal(false);
-    $('#knowledgeSubType').val(0);
-    $('#knowledgeModal').modal()
   })
   $(document).on('click','#addTriggerBtn',function(){
     $('#triggerForm')[0].reset();
@@ -207,7 +190,7 @@ $(document).ready(function() {
              $('#triggerListTmpl').tmpl(ksTriggersJson).appendTo('#triggerListtbody');
              $('#knowledgeModal').modal();
            }else{
-              alert("get Main Data Error,Msg:" + responseObj.msg)
+              alert("get Main Data Error, Msg:" + responseObj.msg)
               return ;
            }
         }

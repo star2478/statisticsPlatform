@@ -27,9 +27,6 @@
 					<li class="main-menu-li active">
 					   <a href="javascript:;" id="statisticsMain" class="main-menu">统计</a>
 					</li>
-					<!-- <li class="main-menu-li">
-					   <a href="javascript:;"	id="applicationManager" class="main-menu">xxx</a>
-					</li> -->
 				</ul>
 			</div>
 		</div>
@@ -108,15 +105,6 @@
 								</div>
 							</div>
 						</div>
-						
-						<!-- <div class="form-group form-group-sm">
-							<label class="col-sm-3 control-label">持久化数据</label>
-							<div class="col-sm-5" style="margin-top: 4px;">
-									<input type="radio" name="persistentStatus"  value="1" checked />是
-									<input type="radio" name="persistentStatus"  value="0" />否
-							</div>
-							<label class="col-sm-4 clue" id="persistentStatusDesc"></label>
-						</div> -->
 					</form>
 				</div>
 				<div class="modal-footer">
@@ -130,10 +118,21 @@
 	</div>
 	
 	<script id="statisticsMainTmpl" type="text/x-jquery-tmpl">
-	  <div class="row">
-	    <button id="addKnowledgeBtn" type="button" class="btn btn-success btn addStrategyBtn">添加</button>
+	  <div class="row marginTop">
+		<form class="form-inline">
+  			<div class="form-group marginLeftAndRight">
+    			<label class="searchKeyMargin">标题</label>
+    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索">
+  			</div>
+  			<div class="form-group marginLeftAndRight">
+    			<label class="searchKeyMargin">渠道</label>
+				<select id="channelList"  class="form-control searchValueMargin"></select>
+  			</div>
+			<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+		</form>
 	  </div>
-	  <div class="row">
+
+	  <div class="row marginTop">
 	    <table class="table table-striped">
 	      	<thead>
 	        	<tr>
@@ -177,6 +176,12 @@
 	    </div>
 	  </div>
 	</script>
+	<script id="channelListTmpl" type="text/x-jquery-tmpl">
+		<option value="所有渠道" selected="selected">所有渠道</option>
+        {{each(i, channel) channels}}
+			<option value="${channel}" >${channel}</option>
+       	{{/each}}
+    </script>
 
 	<script src="js/jquery-1.11.3.min.js"></script>
 	<script src="js/jquery.tmpl.js">

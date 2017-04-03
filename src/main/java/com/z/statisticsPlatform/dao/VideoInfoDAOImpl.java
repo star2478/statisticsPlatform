@@ -3,7 +3,7 @@ package com.z.statisticsPlatform.dao;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -30,10 +30,23 @@ public class VideoInfoDAOImpl {
 	
 	// db.videoInfo.insert({title:"这是标题", link:"www.baidu.com",uploadTime:"2017-04-01 16:00:01",channel:"Youtube",playCount:12});
 //	@Override
-	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit) {
+	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit, String title, String channel, String beginTime, String endTime) {
 //		System.out.println("======" + skip);
-//		@SuppressWarnings("deprecation")
+		Criteria criteria = new Criteria();
+		if (title != null) {
+			Pattern pattern = Pattern.compile("^"+title+"$", Pattern.CASE_INSENSITIVE);
+			criteria.and("title").regex(pattern);
+		}
+		if (channel != null) {
+			criteria.and("channel").is(channel);
+		}
+		if (beginTime != null && endTime != null) {
+			criteria.and("uploadTime").gte(beginTime).lte(endTime);
+		}
+		System.out.println("=====" + criteria);
+		System.out.println("=====" + criteria.toString());
 		Aggregation aggreResult = Aggregation.newAggregation(
+				Aggregation.match(criteria),
         		Aggregation.sort(Sort.Direction.DESC, "uploadTime"),
         		Aggregation.skip(skip),
         		Aggregation.limit(limit)

@@ -24,7 +24,7 @@ public interface VideoInfoDAO  extends MongoRepository<VideoInfoDTO, Long> {
 	 * @param limit
 	 * @return
 	 */
-	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit);
+	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit, String title, String channel, String beginTime, String endTime);
 	
 	
 }
