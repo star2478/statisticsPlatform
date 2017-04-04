@@ -40,14 +40,18 @@ $(document).ready(function() {
   }
   
   // 获取分页统计数据，page页数，1开始
-  function ajaxMainData(pageNo, limit){
+  function ajaxMainData(pageNo, limit, title, channel, beginTime, endTime){
 	var result;
     $.ajax({
         type:'GET',
         url: getVideoInfoByPageUrl,
         data:{
           pageNo : pageNo,
-          limit : limit
+          limit : limit,
+          title : title,
+          channel : channel,
+          beginTime : beginTime,
+          endTime : endTime,
         },
         async:false,
         dataType:'json',
@@ -68,18 +72,15 @@ $(document).ready(function() {
     $(".main-menu-li").removeClass("active");
     jqObj.parent().addClass('active')
   }
-  function changeMainHtml(jsonData){
-    $('#main').html('')
-    $('#statisticsMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+  // 重置搜索条件
+  function resetSearchHtml() {
+	$('#searchTitle').val('');
+	getChannelList();
   }
-  function clearKnowlegeStrategyModal(nameInputEnableFlag){
-    $('#knowledgeForm')[0].reset();
-    $('#knowledgeStrategyName').attr('disabled',nameInputEnableFlag);
-    $('#triggerListtbody').html('')
-  }
-  function clearApplicationStrategyModal(nameInputEnableFlag){
-    $('#applicationForm')[0].reset();
-    $('#applicationStrategyName').attr('disabled',nameInputEnableFlag);
+  // 重置视频列表页
+  function resetVideoListHtml(jsonData){
+    $('#videoListTmpl').html('');
+    $('#statisticsMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
   }
   function delConfirm(msg) {
     if (confirm(msg) == true){
@@ -98,39 +99,38 @@ $(document).ready(function() {
   }
   function refreshMainData(){
 	getChannelList();
-    var firstReturnData = ajaxMainData(1, eachPageNum);
+    var firstReturnData = ajaxMainData(1, eachPageNum, null, null, null, null);
     if (firstReturnData != undefined) {
       tabActiveChange($('#statisticsMain'))
-      $('#main').html('');
-      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+      $('#videoListTmpl').html('');
+      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
     }
   }
+  
+  // 点击统计tab页
+  $(document).on('click','#statisticsMain',function(){
+    var returnData = ajaxMainData(1, eachPageNum, null, null, null, null);
+    if (returnData != undefined) {
+      resetSearchHtml()
+      resetVideoListHtml(returnData)
+      tabActiveChange($(this))
+    }
+  })
+  
+  // 点击search按钮
   $(document).on('click','#searchStatistics',function(){
 	  var searchTitle = $('#searchTitle').val();
-	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle);
+	  var channel = $("#channelList").val();
+	  var beginTime = "";
+	  var endTime = "";
+	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
 	  if (firstReturnData != undefined) {
 	      tabActiveChange($('#statisticsMain'))
-	      $('#main').html('');
-	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#main');
+	      $('#videoListTmpl').html('');
+	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
 	  }
   })
   
-  $(document).on('click','#statisticsMain',function(){
-    var returnData = ajaxMainData(1, eachPageNum);
-    if (returnData != undefined) {
-      returnData.stype = 1
-      changeMainHtml(returnData)
-      tabActiveChange($(this))
-    }
-  })
-  $(document).on('click','#applicationManager',function(){
-    var returnData = ajaxMainData(1, eachPageNum);
-    if (returnData != undefined) {
-      returnData.stype = 2
-      changeMainHtml(returnData)
-      tabActiveChange($(this))
-    }
-  })
   $(document).on('click','input[name=persistentStatus]',function(){
    var perStat = $("input[name=persistentStatus]:checked").val();
    var expiTime = $('#knowledgeStrategyExpi').val();
@@ -152,73 +152,6 @@ $(document).ready(function() {
     setOperationDatas();
     setApplicationDatas();
     $('#triggerModal').modal();
-  })
-  $(document).on('click','.modKnowledgeBtn',function(){
-    var knowledgeStrategyName = $(this).parent().parent().children('.strategyName').html();
-    $('#knowledgeSubType').val(1);
-    var modKnowledgeUrl = hostUri;
-    modKnowledgeUrl = hostUri + "/fsg/strategy/getKnowledgeStrategyByName"
-    $.ajax({
-        type:'POST',
-        url:modKnowledgeUrl,
-        data:{
-          name : knowledgeStrategyName
-        },
-        dataType:'json',
-        success:function  (data) {
-           var responseObj = eval(data);
-           if(responseObj.code==0){
-             var ksName = responseObj['data']['strategy']['key'];
-             var ksDesc = responseObj['data']['strategy']['description'];
-             var ksExpi = responseObj['data']['strategy']['expire'];  
-             var ksStat = responseObj['data']['strategy']['status'];
-             clearKnowlegeStrategyModal(true);
-             $('#knowledgeStrategyName').val(ksName);
-             $('#knowledgeStrategyDesc').val(ksDesc);
-             $('#knowledgeStrategyExpi').val(ksExpi);
-             if(ksStat == 1){
-               $("input[name=knowledgeStatus]:eq(1)").removeAttr("checked");
-               $("input[name=knowledgeStatus]:eq(0)").attr("checked","checked");
-               $("input[name=knowledgeStatus]:eq(0)").click();
-             }else{
-               $("input[name=knowledgeStatus]:eq(0)").removeAttr("checked");
-               $("input[name=knowledgeStatus]:eq(1)").attr("checked","checked");
-               $("input[name=knowledgeStatus]:eq(1)").click();
-             }
-             var ksTriggersJson = responseObj['data']['strategy'];
-             $('#triggerListtbody').html('');
-             $('#triggerListTmpl').tmpl(ksTriggersJson).appendTo('#triggerListtbody');
-             $('#knowledgeModal').modal();
-           }else{
-              alert("get Main Data Error, Msg:" + responseObj.msg)
-              return ;
-           }
-        }
-     });
-  })
-  $(document).on('click','.delKnowledgeBtn',function(){
-    var delKnowledgeName = $(this).parent().parent().children('.strategyName').html();
-    var status = delConfirm("确认删除 " + delKnowledgeName + "么?");
-    if(status){
-      delKnowledgeUrl = hostUri + "/fsg/strategy/deleteKnowledgeStrategyByName"
-      $.ajax({
-          type:'POST',
-          url:delKnowledgeUrl,
-          data:{
-            name : delKnowledgeName,
-          },
-          dataType:'json',
-          success:function  (data) {
-             var responseObj = eval(data);
-             if(responseObj.code==0){
-                alert("已成功删除");
-                refreshMainData();
-             }else{
-                alert("get Main Data Error,Msg:" + responseObj.msg)
-             }
-          }
-       });
-     }
   });
   $(document).on('click','.showChartBtn',function(){
     var knowledgeName = $(this).parent().parent().children('.strategyName').html();
@@ -226,51 +159,14 @@ $(document).ready(function() {
     storage.setItem("strategyName",knowledgeName)
     window.location.href = chartHtmlUrl;
   });
-  $(document).on('click','.modApplicationBtn',function(){
-    var appStrateName = $(this).parent().parent().children('.strategyName').html();
-    $('#applicationSubType').val(1);
-    var modApplicationUrl = hostUri;
-    modApplicationUrl = hostUri + "/fsg/strategy/getAppStrategyByName"
-    $.ajax({
-        type:'POST',
-        url:modApplicationUrl,
-        data:{
-          name : appStrateName
-        },
-        dataType:'json',
-        success:function  (data) {
-          var responseObj = eval(data);
-          if(responseObj.code==0){
-            var asName = responseObj['data']['strategy']['name'];
-            var asDesc = responseObj['data']['strategy']['description'];
-            var asComm = responseObj['data']['strategy']['command'];
-            clearApplicationStrategyModal(true);
-            $('#applicationStrategyName').val(asName);
-            $('#applicationStrategyDesc').val(asDesc);
-            $('#applicationStrategyComm').val(asComm);
-            $('#applicationModal').modal();
-          }else{
-             alert("get Main Data Error,Msg:" + responseObj.msg)
-          }
-        }
-     });
-  });
   $(document).on('click','.knowlegePaginationBtn',function(){
-    pageNum = $(this).data('index')
-    var returnData = ajaxMainData(pageNum, eachPageNum);
+    pageNum = $(this).data('index');
+	var searchTitle = $('#searchTitle').val();
+    var returnData = ajaxMainData(pageNum, eachPageNum, searchTitle);
     if (returnData != undefined) {
       returnData.stype = 1
-      changeMainHtml(returnData)
+      resetVideoListHtml(returnData)
       tabActiveChange($('#statisticsMain'))
-    }
-  });
-  $(document).on('click','.applicationPaginationBtn',function(){
-    pageNum = $(this).data('index')
-    var returnData = ajaxMainData(pageNum, eachPageNum);
-    if (returnData != undefined) {
-      returnData.stype = 2
-      changeMainHtml(returnData)
-      tabActiveChange($('#applicationManager'))
     }
   })
   $(document).on('click','#triggerSubmitBtn',function(){

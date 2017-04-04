@@ -32,7 +32,22 @@
 		</div>
 	</nav>
 	<div id="wrapper">
-		<div id="main" class="container">
+		<div id="main">
+			<div class="row marginTop">
+				<form class="form-inline">
+		  			<div class="form-group marginLeftAndRight">
+		    			<label class="searchKeyMargin">标题</label>
+		    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索">
+		  			</div>
+		  			<div class="form-group marginLeftAndRight">
+		    			<label class="searchKeyMargin">渠道</label>
+						<select id="channelList"  class="form-control searchValueMargin"></select>
+		  			</div>
+					<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+				</form>
+			</div>
+			<div id="videoListTmpl">
+			</div>
 		</div>
 	</div>
 	<div class="modal fade" id="knowledgeModal" tabindex="-1" role="dialog" aria-labelledby="knowledgeModalLabel" aria-hidden="true">
@@ -119,20 +134,6 @@
 	
 	<script id="statisticsMainTmpl" type="text/x-jquery-tmpl">
 	  <div class="row marginTop">
-		<form class="form-inline">
-  			<div class="form-group marginLeftAndRight">
-    			<label class="searchKeyMargin">标题</label>
-    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索">
-  			</div>
-  			<div class="form-group marginLeftAndRight">
-    			<label class="searchKeyMargin">渠道</label>
-				<select id="channelList"  class="form-control searchValueMargin"></select>
-  			</div>
-			<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
-		</form>
-	  </div>
-
-	  <div class="row marginTop">
 	    <table class="table table-striped">
 	      	<thead>
 	        	<tr>
@@ -159,21 +160,10 @@
 	    </table>
 	  </div>
 	  <div class="row">
-	    <div class="col-md-1">
-	    </div>
-	    <div class="col-md-9">
-	      <nav id="strategyPage">
-	        <ul class="pagination right">
-					{{each(i,prop) $item.makeArrayForEach("poet",$data.totalPageNumber)}}
-						<li class="{{if body.currentPageNumber == (i+1)}}active{{/if}}">
-							<a data-index="${i+1}" href="javascript:;" class="knowlegePaginationBtn">
-								${i+1}
-							</a>
-						</li>
-					{{/each}}
-	        </ul>
-	      </nav>
-	    </div>
+    	<ul class="pager">
+     	   	<li class="{{if body.hasPrePage == 0}}disabled{{/if}}" id="prePage"><a href="#">上一页</a></li>
+			<li class="{{if body.hasNextPage == 0}}disabled{{/if}}" id="nextPage"><a href="#">下一页</a></li>
+    	</ul>
 	  </div>
 	</script>
 	<script id="channelListTmpl" type="text/x-jquery-tmpl">

@@ -1,6 +1,7 @@
 package com.z.statisticsPlatform.controller;
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,9 @@ import com.z.statisticsPlatform.dao.VideoInfoDAO;
 import com.z.statisticsPlatform.dto.VideoInfoDTO;
 import com.z.statisticsPlatform.util.ResponseUtil;
 import com.z.statisticsPlatform.util.ResultInfo;
+import com.z.statisticsPlatform.vo.GetVideoInfoByPageVO;
+
+import ch.qos.logback.core.joran.conditional.IfAction;
 
 @RestController
 public class StatisticsPlatformController {
@@ -40,24 +44,37 @@ public class StatisticsPlatformController {
 			return new ResultInfo(ResponseUtil.param_error_code);
 		}
     	
-    	channel = (channel != null && !channel.equals("所有渠道")) ? channel : null;
+    	if (channel != null && channel.equals("所有渠道")) {
+    		channel = null;
+    	}
     	
-		long count = videoInfoDAO.getCount();
-		Long totalPageNumber = (count % limit) == 0 ? count/limit :(count/limit) + 1;
-		// 如果请求的页码大于总页数，则返回错误
-		if(totalPageNumber > 0 && pageNo > totalPageNumber) {
-			logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit);
-			return new ResultInfo(ResponseUtil.param_error_code);
-		}
+//		long count = videoInfoDAO.getCount();
+//		Long totalPageNumber = (count % limit) == 0 ? count/limit :(count/limit) + 1;
+//		// 如果请求的页码大于总页数，则返回错误
+//		if(totalPageNumber > 0 && pageNo > totalPageNumber) {
+//			logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit);
+//			return new ResultInfo(ResponseUtil.param_error_code);
+//		}
 		
 		Integer skip = (pageNo - 1) * limit;
-    	List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfoByPage(skip, limit + 1, title, channel, beginTime, endTime);
-    	Map<String, Object> result = new HashMap<String, Object>();
-    	result.put("videos", videoInfoDTOs);
-    	result.put("totalPageNumber", ((videoInfoDTOs != null && videoInfoDTOs.size() > 0) ? totalPageNumber : 0));	// 此处totalPageNumber表示所有数据总页数，而非
-    	result.put("currentPageNumber", pageNo);
-    	result.put("hasPrePage", ((pageNo > 1) ? 1 : 0));
-    	result.put("hasNextPage", ((videoInfoDTOs != null && videoInfoDTOs.size() > limit) ? 1 : 0));
+		// limit+1多请求一条是为了计算是否有下一页
+		List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfoByPage(skip, limit + 1, title, channel, beginTime, endTime);
+    	GetVideoInfoByPageVO result = new GetVideoInfoByPageVO();
+    	result.setHasPrePage(((pageNo > 1) ? 1 : 0));
+    	int hasNextPage = (videoInfoDTOs != null && videoInfoDTOs.size() > limit) ? 1 : 0;
+    	result.setHasNextPage(hasNextPage);
+    	
+    	List<VideoInfoDTO> videos = new ArrayList<VideoInfoDTO>();
+		int size = videoInfoDTOs.size();
+		for (int i = 0; i < size; i++) {
+			// 如果有下一页，则丢弃最后一个元素
+			if((i == size - 1) && hasNextPage == 1) {
+				break;
+			}
+			videos.add(videoInfoDTOs.get(i));
+		}
+    	result.setVideos(videos);
+    	
 		return new ResultInfo(ResponseUtil.success_code, result);
     }
 }
