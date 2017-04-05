@@ -9,7 +9,7 @@ $(document).ready(function() {
     }
     return result;
   }
-
+  
   refreshMainData();
   
   // 获取所有渠道
