@@ -11,6 +11,21 @@ $(document).ready(function() {
   }
   
   refreshMainData();
+
+  function refreshMainData(){
+	getChannelList();
+	var searchTitle = $('#searchTitle').val();
+	var channel = $("#channelList").val();
+	var beginTime = $("#beginTime").html();
+	var endTime = $("#endTime").html();
+	var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
+//    var firstReturnData = ajaxMainData(1, eachPageNum, null, null, null, null);
+    if (firstReturnData != undefined) {
+      tabActiveChange($('#statisticsMain'))
+      $('#videoListTmpl').html('');
+      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
+    }
+  }
   
   // 获取所有渠道
   function getChannelList() {
@@ -23,15 +38,6 @@ $(document).ready(function() {
             var responseObj = eval(data);
             if(responseObj.code == 200){
             	$("#channelList").append($("#channelListTmpl").tmpl(data.body));
-//            	$('#getAppList').selectpicker('refresh');
-//            	$('#getAppListMulti').data('mutishowData',data.data);
-//            	//隐藏银行多选框
-//            	$('.section').hide();
-//        		$("#getAppListMulti").selectpicker('hide');
-//        		$('#getAppVerList').selectpicker('hide');
-//            	//加载appVersionList
-//            	var appId = $('#getAppList').val();
-//            	getAppVersionList(appId);
             }else{
                alert("get Channel Data Error,Msg:" + responseObj.message)
             }
@@ -82,30 +88,6 @@ $(document).ready(function() {
     $('#videoListTmpl').html('');
     $('#statisticsMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
   }
-  function delConfirm(msg) {
-    if (confirm(msg) == true){
-      return true;
-    }else{
-      return false;
-    }
-  }
-  function setOperationDatas(){
-    $('#triggerOpe').html('');
-    $('#triggerOpe').append("<option><</option>");
-    $('#triggerOpe').append("<option>=</option>");
-    $('#triggerOpe').append("<option>></option>");
-    $('#triggerOpe').append("<option><=</option>");
-    $('#triggerOpe').append("<option>>=</option>");
-  }
-  function refreshMainData(){
-	getChannelList();
-    var firstReturnData = ajaxMainData(1, eachPageNum, null, null, null, null);
-    if (firstReturnData != undefined) {
-      tabActiveChange($('#statisticsMain'))
-      $('#videoListTmpl').html('');
-      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
-    }
-  }
   
   // 点击统计tab页
   $(document).on('click','#statisticsMain',function(){
@@ -115,22 +97,79 @@ $(document).ready(function() {
       resetVideoListHtml(returnData)
       tabActiveChange($(this))
     }
-  })
+  });
   
   // 点击search按钮
   $(document).on('click','#searchStatistics',function(){
 	  var searchTitle = $('#searchTitle').val();
 	  var channel = $("#channelList").val();
-	  var beginTime = "";
-	  var endTime = "";
+	  var beginTime = $("#beginTime").html();
+	  var endTime = $("#endTime").html();
 	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
 	  if (firstReturnData != undefined) {
 	      tabActiveChange($('#statisticsMain'))
 	      $('#videoListTmpl').html('');
 	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
 	  }
-  })
+  });
   
+  // 点击上一页
+  $(document).on('click','#prePage',function(){
+	  var disabled = $("#prePage").attr("class");
+	  if(disabled == "disabled") {
+		  return;
+	  }
+	  var searchTitle = $('#searchTitle').val();
+	  var channel = $("#channelList").val();
+	  var beginTime = $("#beginTime").html();
+	  var endTime = $("#endTime").html();
+	  var pageNo = $("#prePage").attr("data-page");
+	  var firstReturnData = ajaxMainData(pageNo-1, eachPageNum, searchTitle, channel, beginTime, endTime);
+	  if (firstReturnData != undefined) {
+	      tabActiveChange($('#statisticsMain'))
+	      $('#videoListTmpl').html('');
+	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
+	  }
+  });
+  
+  // 点击下一页
+  $(document).on('click','#nextPage',function(){
+	  var disabled = $("#nextPage").attr("class");
+	  if(disabled == "disabled") {
+		  return;
+	  }
+	  var searchTitle = $('#searchTitle').val();
+	  var channel = $("#channelList").val();
+	  var beginTime = $("#beginTime").html();
+	  var endTime = $("#endTime").html();
+	  var pageNo = $("#nextPage").attr("data-page");
+	  var firstReturnData = ajaxMainData(pageNo, eachPageNum, searchTitle, channel, beginTime, endTime);
+	  if (firstReturnData != undefined) {
+	      tabActiveChange($('#statisticsMain'))
+	      $('#videoListTmpl').html('');
+	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
+	  }
+  });
+  
+  // 点击历史图表
+  $(document).on('click','.showChartBtn',function(){
+    var videoTitle = $(this).parent().parent().children().attr("videotitle");
+    var videoChannel = $(this).parent().parent().children().attr("videochannel");
+    var storage = window.localStorage;
+    storage.setItem("videoTitle", videoTitle);
+    storage.setItem("videoChannel", videoChannel);
+//    window.location.href = chartHtmlUrl;	// 当前页面打开
+    window.open(chartHtmlUrl + "?videoTitle=" + videoTitle + "&videoChannel=" + videoChannel);	// 新页面打开
+  });
+  
+  function setOperationDatas(){
+    $('#triggerOpe').html('');
+    $('#triggerOpe').append("<option><</option>");
+    $('#triggerOpe').append("<option>=</option>");
+    $('#triggerOpe').append("<option>></option>");
+    $('#triggerOpe').append("<option><=</option>");
+    $('#triggerOpe').append("<option>>=</option>");
+  }
   $(document).on('click','input[name=persistentStatus]',function(){
    var perStat = $("input[name=persistentStatus]:checked").val();
    var expiTime = $('#knowledgeStrategyExpi').val();
@@ -152,12 +191,6 @@ $(document).ready(function() {
     setOperationDatas();
     setApplicationDatas();
     $('#triggerModal').modal();
-  });
-  $(document).on('click','.showChartBtn',function(){
-    var knowledgeName = $(this).parent().parent().children('.strategyName').html();
-    var storage = window.localStorage;
-    storage.setItem("strategyName",knowledgeName)
-    window.location.href = chartHtmlUrl;
   });
   $(document).on('click','.knowlegePaginationBtn',function(){
     pageNum = $(this).data('index');
@@ -211,13 +244,7 @@ $(document).ready(function() {
     }
     $('#triggerModal').modal('hide');
   })
-  $(document).on('click','.delTriggerBtn',function(){
-    name = $(this).parent().parent().children('.triggerKey').html();
-    var status = delConfirm("确认删除" + name + "?");
-    if (status){
-      $(this).parent().parent().remove();
-    }
-  })
+
   $(document).on('click','.modTriggerBtn',function(){
     var triKey = $(this).parent().parent().children('.triggerKey').html();
     var sql = $(this).parent().parent().children('.sql').text();
@@ -318,47 +345,5 @@ $(document).ready(function() {
       }
    });
   })
-  $(document).on('click','#applicationModalSubBtn',function(){
-    var submitType = $('#applicationSubType').val();
-    var appSubUrl = hostUri;
-    var msg = "";
-    if (submitType == 0) {
-      appSubUrl = hostUri + "/fsg/strategy/addAppStrategy";
-      msg = "添加";
-    }else{
-      appSubUrl = hostUri + "/fsg/strategy/modifyAppStategyByName";
-      msg = "修改";
-    }
-    var asName = $('#applicationStrategyName').val();
-    var asDesc = $('#applicationStrategyDesc').val();
-    var asComm = $('#applicationStrategyComm').val();
-    var applicationSubJson = {};
-    applicationSubJson.name = asName;
-    applicationSubJson.description = asDesc;
-    applicationSubJson.command = asComm;
-    if(asName.match(/^[A-Za-z0-9-_]+$/) == null){
-      alert("只能为数字、英文字母、-和_");
-      return ;
-    }
-    $.ajax({
-      type:'POST',
-      url:appSubUrl,
-      data:{
-    	  subJson : JSON.stringify(applicationSubJson)
-      },
-      dataType:'json',
-      success:function  (data) {
-         var responseObj = eval(data);
-         if(responseObj.code==0){
-            alert(msg + "成功！");
-            refreshMainData();
-            $('#applicationModal').modal('hide');
-         }else{
-            alert(msg + "失败,Msg:" + responseObj.msg)
-         }
-      }
-   });
-  })
-  
   
 });

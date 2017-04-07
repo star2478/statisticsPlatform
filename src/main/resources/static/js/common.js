@@ -1,6 +1,7 @@
 var hostUri = 'http://'+window.location.host;
 var getVideoInfoByPageUrl = hostUri + "/getVideoInfoByPage";
 var getChannelListUrl = hostUri + "/getChannelList";
+var chartHtmlUrl = hostUri + "/chart.html";
 var eachPageNum = 2;
 
 var getStatByKeyAndTriggerAndBaseInfoUrl = hostUri + "/fsg/strategy/getStatByKeyAndTriggerAndBaseInfo";
@@ -10,8 +11,6 @@ var getAllKnowledeNameUrl = hostUri + "/fsg/strategy/getAllPersistentedStrategy"
 var getAllFieldByKeyUrl = hostUri + "/fsg/strategy/getAllFieldByKey";
 var getAllTriggersByKeyUrl = hostUri + "/fsg/strategy/getAllTriggersByKey";
 var getAllBaseInfoByKeyUrl = hostUri + "/fsg/strategy/getAllBaseInfoByKey";
-var chartHtmlUrl = hostUri + "/stat/strategy/chart.html";
-var homeHtmlUrl = hostUri + "/stat/strategy/home.html";
 
 function splitTimeToSeconds(time) {
     var year = time.split('-')[0];
@@ -44,3 +43,25 @@ function htmlEntityEncode(str) {
 //	str = str.replace(/ /g," ");
 	return str;
 }
+
+// 获取url中的参数
+function getUrlParam(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+    var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+    if (r != null) {
+    	return unescape(r[2]); 
+    }
+    return null; //返回参数值
+}
+function GetRequest() { 
+	var url = location.search; //获取url中"?"符后的字串 
+	var theRequest = new Object(); 
+	if (url.indexOf("?") != -1) { 
+	var str = url.substr(1); 
+	strs = str.split("&"); 
+	for(var i = 0; i < strs.length; i ++) { 
+	theRequest[strs[i].split("=")[0]]=unescape(strs[i].split("=")[1]); 
+	} 
+	} 
+	return theRequest; 
+} 

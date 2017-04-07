@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8" />
-<title>策略平台配置中心</title>
+<title>统计平台</title>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <style type="text/css">
     .btn-group{
@@ -18,82 +18,76 @@
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
 
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="javascript:void(0);" id="titleNavbar">策略平台配置中心</a>
-            </div>
-        </div>
-    </nav>
-    <div id="wrapper">
-        <div id="main" class="container">
-            <div class="row">
-                <div class="col-sm-3">
-                    <label class="control-label">知识策略名</label>
-                    <select class="form-control" id="knowledgeStrategyName">
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">appID</label>
-                    <select class="form-control" id="appID">
-                    	<option>所有appID</option>
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">os</label>
-                    <select class="form-control" id="os">
-                    	<option>所有os</option>
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">版本号</label>
-                    <select class="form-control" id="appVersion">
-                    	<option>所有版本号</option>
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">trigger</label>
-                    <select class="form-control" id="triggerStrategyName">
-                        <option>所有trigger</option>
-
-                    </select>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">开始时间</label>
-                    <div>
-                        <input type="text" class="col-sm-6 form-control input" id="beginTime" readonly="true"/>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                    <label class="control-label">结束时间</label>
-                    <div>
-                        <input type="text" class="col-sm-6 form-control input" id="endTime" readonly="true"/>
-                    </div>
-                </div>
-                <div class="col-sm-3">
-                	<label class="control-label"></label> 
-                	<div>
-                		<button id="getStatBtn" type="button" class="btn btn-success btn">确定</button>
-                    </div>
-                </div>
-            </div>
-            <div class="row">
-                <div id="chartDiv">
-                    
-                </div>
-            </div>
-
-        </div>
-    </div>
-    
+	<nav class="navbar navbar-inverse navbar-fixed-top">
+		<div class="container-fluid">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="">统计平台</a>
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li class="main-menu-li active">
+					   <a href="javascript:;" id="statisticsMain" class="main-menu">统计</a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div id="wrapper">
+		<div id="main">
+			<div class="row marginTop">
+				<form class="form-inline">
+		  			<div class="form-group marginLeftAndRight">
+		    			<label class="searchKeyMargin">标题</label>
+		    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索" disabled="true">
+		  			</div>
+		  			<div class="form-group marginLeftAndRight">
+		    			<label class="searchKeyMargin">渠道</label>
+						<select id="channelList"  class="form-control searchValueMargin" disabled="true"></select>
+		  			</div>
+		  			
+				    <div class="form-group marginLeftAndRight">
+		    			<label class="searchKeyMargin">时间</label>
+     					<button id="beginTime" type="button" class="btn btn-default">2017-01-01</button>
+     					to
+     					<button id="endTime" type="button" class="btn btn-default">2017-01-01</button>
+     				</div>
+					<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+					<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+				</form>
+			</div>
+			<div id="chartDiv">
+			</div>
+		</div>
+	</div>
+   
     <script src="js/jquery-1.11.3.min.js"></script>
     <script src="js/jquery.tmpl.js"></script>
     <script src="js/jquery-ui.min.js"></script>
     <script src="js/bootstrap.min.js"></script>
     <script src="js/highcharts.js"></script>
-    <script src="js/rome.js"></script>
     <script src="js/common.js"></script>
-    <script src="js/strategychart.js"></script>
+    <script src="js/statisticsChart.js"></script>
+  	<script src="js/plugins/laydate/laydate.js"></script>
+    
+    <script>
+		$("#beginTime").html(laydate.now(-7));
+  		$("#endTime").html(laydate.now(0));
+
+  	  	$(document).ready(function(){
+  			   
+			laydate({
+				elem: '#beginTime',
+	  			format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
+	  			festival: true ,//显示节日,
+			});   
+			laydate({
+				elem: '#endTime',
+	  			format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
+	  			festival: true ,//显示节日,
+			});
+			
+  	 	});	
+  	</script>
 
 </body>
 </html>

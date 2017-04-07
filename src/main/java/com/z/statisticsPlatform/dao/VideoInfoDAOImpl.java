@@ -56,12 +56,11 @@ public class VideoInfoDAOImpl {
 		return results.getMappedResults();
 	}
 	
-//	public VideoInfoDTO getConfigByName(String name) {
-//		Criteria criteria = new Criteria().where("key").is(name);
-//		Query query = new Query(criteria);
-//		return mongoTemplate.findOne(query, VideoInfoDTO.class);
-////		return this._get(Criteria.where("name").is(name));
-//	}
+	public VideoInfoDTO getVideoInfo(String title, String channel, String uploadTime) {
+		Criteria criteria = new Criteria().where("title").is(title).and("channel").is(channel).and("uploadTime").is(uploadTime);
+		Query query = new Query(criteria);
+		return mongoTemplate.findOne(query, VideoInfoDTO.class);
+	}
 	
 //	@Override
 //	public void insertKnowledgeStrategy(KnowledgeStrategyConfigDTO KnowledgeStrategyConfigDTO){

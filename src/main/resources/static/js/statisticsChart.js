@@ -277,52 +277,11 @@ $(document).ready(function () {
     };
 
     function init() {
+    	var aaa=getUrlParam("videoTitle");
+    	$("#searchTitle").val(aaa);
+    	$("#channelList").val(aaa);
         var storage = window.localStorage;
         var strategyName = storage.getItem("strategyName")
-        var curDate = new Date();
-        var endDate = curDate;
-        var curMinute = curDate.getMinutes();
-        if (curMinute > 30) {	// 如果当前时间的分钟超过30，则endDate往前调半个小时
-        	var adjustSeconds = curDate.getTime() + 1800000;
-        	endDate = new Date(adjustSeconds);
-        }
-        var endTotalSeconds = endDate.getTime() - 43200000;	// beginDate相对于endDate往后推12个小时
-        var beginDate = new Date(endTotalSeconds);
-        var beginMinute = beginDate.getMinutes();
-        var endMinute = endDate.getMinutes();
-        if (beginMinute >= 30) {
-            beginMinute = 30;
-        } else {
-            beginMinute = 0;
-        }
-        if (endMinute >= 30) {
-            endMinute = 30;
-        } else {
-            endMinute = 0;
-        }
-        var beginTime = beginDate.getFullYear() + "-" + (beginDate.getMonth() + 1) + "-" + beginDate.getDate() + " " + beginDate.getHours() + ":" + beginMinute;
-        var endTime = endDate.getFullYear() + "-" + (endDate.getMonth() + 1) + "-" + endDate.getDate() + " " + endDate.getHours() + ":" + endMinute;
-        var beginTimeObj = document.getElementById("beginTime");
-        var endTimeObj = document.getElementById("endTime");
-
-        
-        $(document).on('click','#titleNavbar',function(){
-		    window.location.href = homeHtmlUrl;
-		 });
-        
-        //初始化时间框输入框start
-        rome(beginTimeObj,
-            {
-                initialValue: beginTime,
-                dateValidator: rome.val.beforeEq(endTimeObj)
-            });
-
-        rome(endTimeObj,
-            {
-                initialValue: endTime,
-                dateValidator: rome.val.afterEq(beginTimeObj)
-            });
-        //初始化时间框输入框end
 
         //初始化知识策略名输入框start
          $.ajax({
@@ -344,14 +303,8 @@ $(document).ready(function () {
              }
          });
 
-         //初始化触发应用名输入框start
-         drawBaseInfoSelection(strategyName);
-         drawTriggerSelection(strategyName);
-     
-        //初始化触发应用名输入框end
         setClickListener(beginTimeObj, endTimeObj);
     }
 
     init();
-//    drawCharts();
 });

@@ -13,6 +13,7 @@ public class PageVO {
 	
 	private int hasPrePage;	// 是否有上一页
 	private int hasNextPage;	// 是否有下一页
+	private int curPage;	// 当前页码
 	public int getHasPrePage() {
 		return hasPrePage;
 	}
@@ -24,6 +25,12 @@ public class PageVO {
 	}
 	public void setHasNextPage(int hasNextPage) {
 		this.hasNextPage = hasNextPage;
+	}
+	public int getCurPage() {
+		return curPage;
+	}
+	public void setCurPage(int curPage) {
+		this.curPage = curPage;
 	}
 	
 }

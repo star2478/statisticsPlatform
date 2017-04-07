@@ -51,13 +51,14 @@
      					<button id="endTime" type="button" class="btn btn-default">2017-01-01</button>
      				</div>
 					<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+					<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
 				</form>
 			</div>
 			<div id="videoListTmpl">
 			</div>
 		</div>
 	</div>
-	
+	<!-- <div id="laydate_box" class="laydate_box" name="laydate-v1.1" style="position: absolute; left: 842.922px; top: 309px; display: block;"><div class="laydate_top"><div class="laydate_ym laydate_y" id="laydate_YY"><a class="laydate_choose laydate_chprev laydate_tab"><cite></cite></a><input id="laydate_y" readonly=""><label></label><a class="laydate_choose laydate_chnext laydate_tab"><cite></cite></a><div class="laydate_yms "><a class="laydate_tab laydate_chtop"><cite></cite></a><ul id="laydate_ys"><li y="2010">2010年</li><li y="2011">2011年</li><li y="2012">2012年</li><li y="2013">2013年</li><li y="2014">2014年</li><li y="2015">2015年</li><li y="2016">2016年</li><li class="laydate_click" y="2017">2017年</li><li y="2018">2018年</li><li y="2019">2019年</li><li y="2020">2020年</li><li y="2021">2021年</li><li y="2022">2022年</li><li y="2023">2023年</li></ul><a class="laydate_tab laydate_chdown"><cite></cite></a></div></div><div class="laydate_ym laydate_m" id="laydate_MM"><a class="laydate_choose laydate_chprev laydate_tab"><cite></cite></a><input id="laydate_m" readonly=""><label></label><a class="laydate_choose laydate_chnext laydate_tab"><cite></cite></a><div class="laydate_yms" id="laydate_ms"><span m="0">01月</span><span m="1">02月</span><span m="2" class="laydate_click">03月</span><span m="3">04月</span><span m="4">05月</span><span m="5">06月</span><span m="6">07月</span><span m="7">08月</span><span m="8">09月</span><span m="9">10月</span><span m="10">11月</span><span m="11">12月</span></div></div></div><table class="laydate_table" id="laydate_table"><thead><tr><th>日</th><th>一</th><th>二</th><th>三</th><th>四</th><th>五</th><th>六</th></tr></thead><tbody><tr><td class="laydate_nothis" y="2017" m="2" d="26">26</td><td class="laydate_nothis" y="2017" m="2" d="27">27</td><td class="laydate_nothis" y="2017" m="2" d="28">28</td><td class="" y="2017" m="3" d="1">1</td><td class="" y="2017" m="3" d="2">2</td><td class="" y="2017" m="3" d="3">3</td><td class="" y="2017" m="3" d="4">4</td></tr><tr><td class="" y="2017" m="3" d="5">5</td><td class="" y="2017" m="3" d="6">6</td><td class="" y="2017" m="3" d="7">7</td><td class="" y="2017" m="3" d="8">妇女</td><td class="" y="2017" m="3" d="9">9</td><td class="" y="2017" m="3" d="10">10</td><td class="" y="2017" m="3" d="11">11</td></tr><tr><td class="" y="2017" m="3" d="12">12</td><td class="" y="2017" m="3" d="13">13</td><td class="" y="2017" m="3" d="14">14</td><td class="" y="2017" m="3" d="15">15</td><td class="" y="2017" m="3" d="16">16</td><td class="" y="2017" m="3" d="17">17</td><td class="" y="2017" m="3" d="18">18</td></tr><tr><td class="" y="2017" m="3" d="19">19</td><td class="" y="2017" m="3" d="20">20</td><td class="" y="2017" m="3" d="21">21</td><td class="" y="2017" m="3" d="22">22</td><td class="" y="2017" m="3" d="23">23</td><td class="" y="2017" m="3" d="24">24</td><td class="" y="2017" m="3" d="25">25</td></tr><tr><td class="" y="2017" m="3" d="26">26</td><td class="" y="2017" m="3" d="27">27</td><td class="" y="2017" m="3" d="28">28</td><td class="laydate_click" y="2017" m="3" d="29">29</td><td class="" y="2017" m="3" d="30">30</td><td class="" y="2017" m="3" d="31">31</td><td class="laydate_nothis" y="2017" m="4" d="1">1</td></tr><tr><td class="laydate_nothis" y="2017" m="4" d="2">2</td><td class="laydate_nothis" y="2017" m="4" d="3">3</td><td class="laydate_nothis" y="2017" m="4" d="4">4</td><td class="laydate_nothis" y="2017" m="4" d="5">清明</td><td class="laydate_nothis" y="2017" m="4" d="6">6</td><td class="laydate_nothis" y="2017" m="4" d="7">7</td><td class="laydate_nothis" y="2017" m="4" d="8">8</td></tr></tbody></table><div class="laydate_bottom"><ul id="laydate_hms" style="display: none;"><li class="laydate_sj">时间</li><li><input readonly="">:</li><li><input readonly="">:</li><li><input readonly=""></li></ul><div class="laydate_time" id="laydate_time"></div><div class="laydate_btn"><a id="laydate_clear" style="display: block;">清空</a><a id="laydate_today" style="display: block;">今天</a><a id="laydate_ok" style="display: block;">确认</a></div></div></div> -->
 	<script id="statisticsMainTmpl" type="text/x-jquery-tmpl">
 	  <div class="row marginTop">
 	    <table class="table table-striped">
@@ -73,12 +74,12 @@
 			<tbody>
 				{{each(i,video) body.videos}}
 					<tr>
-	          			<td><a href="${video.link}" target="_black">${video.title}</a></td>
-						<td>${video.channel}</td>
+	          			<td videotitle="${video.title}"><a href="${video.link}" target="_black">${video.title}</a></td>
+						<td videochannel="${video.channel}">${video.channel}</td>
 						<td>${video.uploadTime}</td>
 						<td>${video.playCount}</td>
 	          			<td>
-							<button type="button" class="btn btn-info btn-xs showChartBtn">查看图表</button>
+							<button type="button" class="btn btn-info btn-xs showChartBtn">历史图表</button>
 						</td>
 	        		</tr>
 				{{/each}}
@@ -87,8 +88,8 @@
 	  </div>
 	  <div class="row">
     	<ul class="pager">
-     	   	<li class="{{if body.hasPrePage == 0}}disabled{{/if}}" id="prePage"><a href="#">上一页</a></li>
-			<li class="{{if body.hasNextPage == 0}}disabled{{/if}}" id="nextPage"><a href="#">下一页</a></li>
+     	   	<li class="{{if body.hasPrePage == 0}}disabled{{/if}}" id="prePage" data-page="${body.curPage}"><a href="javascript:void(0);">上一页</a></li>
+			<li class="{{if body.hasNextPage == 0}}disabled{{/if}}" id="nextPage" data-page="${(body.curPage+1)}"><a href="javascript:void(0);">下一页</a></li>
     	</ul>
 	  </div>
 	</script>
@@ -112,32 +113,17 @@
   		$("#endTime").html(laydate.now(0));
 
   	  $(document).ready(function(){
-  			/* fillBoardData();
-  			$('li.getStatisticsInfoList.active').click(); */
-  			/* $('.nav>li').click(function(){
-  					$(this).parents('ul').find('li.active').removeClass('active');
-  					$(this).addClass('active');
-  				}); */
-  			/* $('#getAppList').change(); */
-  			   
-  				laydate({
-  				    elem: '#beginTime',
-  				    format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
-  				    festival: true ,//显示节日,
-  				    /* choose:function(){
-  				    	$('li.userType.active').click();
-  				    } */
-  				});
-  				
-  				laydate({
-  				    elem: '#endTime',
-  				    format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
-  				    festival: true ,//显示节日
-  				    /* choose:function(){
-  				    	$('li.userType.active').click();
-  			    } */
-  				});
-  			
+		laydate({
+			elem: '#beginTime',
+  			format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
+  			festival: true ,//显示节日,
+		});   
+		laydate({
+			elem: '#endTime',
+  			format: 'YYYY-MM-DD', // 分隔符可以任意定义，该例子表示只显示年月
+  			festival: true ,//显示节日,
+		});
+		
   	 });	
   	</script>
 
