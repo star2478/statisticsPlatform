@@ -36,14 +36,14 @@
 		<div id="main">
 			<div class="row marginTop">
 				<form class="form-inline">
-		  			<div class="form-group marginLeftAndRight">
+		  			<!-- <div class="form-group marginLeftAndRight">
 		    			<label class="searchKeyMargin">标题</label>
 		    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索" disabled="true">
 		  			</div>
 		  			<div class="form-group marginLeftAndRight">
 		    			<label class="searchKeyMargin">渠道</label>
 						<select id="channelList"  class="form-control searchValueMargin" disabled="true"></select>
-		  			</div>
+		  			</div> -->
 		  			
 				    <div class="form-group marginLeftAndRight">
 		    			<label class="searchKeyMargin">时间</label>
@@ -51,8 +51,11 @@
      					to
      					<button id="endTime" type="button" class="btn btn-default">2017-01-01</button>
      				</div>
-					<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
-					<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+     				
+				    <div class="form-group alignRight">
+						<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+						<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+					</div>
 				</form>
 			</div>
 			<div id="chartDiv">

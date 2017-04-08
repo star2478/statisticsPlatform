@@ -29,6 +29,11 @@ body{
   margin-right: 30px;
 }
 
+.alignRight{
+  margin-right: 8px;
+  float: right;
+}
+
 .searchKeyMargin{
   margin-right: 5px;
 }

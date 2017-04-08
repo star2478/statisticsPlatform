@@ -50,8 +50,11 @@
      					to
      					<button id="endTime" type="button" class="btn btn-default">2017-01-01</button>
      				</div>
-					<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
-					<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+     				
+				    <div class="form-group alignRight">
+						<button id="searchStatistics" type="button" class="btn btn-success">查找</button>
+						<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+					</div>
 				</form>
 			</div>
 			<div id="videoListTmpl">
@@ -76,7 +79,7 @@
 					<tr>
 	          			<td videotitle="${video.title}"><a href="${video.link}" target="_black">${video.title}</a></td>
 						<td videochannel="${video.channel}">${video.channel}</td>
-						<td>${video.uploadTime}</td>
+						<td uploadtime="${video.uploadTime}">${video.uploadTime}</td>
 						<td>${video.playCount}</td>
 	          			<td>
 							<button type="button" class="btn btn-info btn-xs showChartBtn">历史图表</button>

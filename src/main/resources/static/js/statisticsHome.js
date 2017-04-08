@@ -155,11 +155,13 @@ $(document).ready(function() {
   $(document).on('click','.showChartBtn',function(){
     var videoTitle = $(this).parent().parent().children().attr("videotitle");
     var videoChannel = $(this).parent().parent().children().attr("videochannel");
+    var uploadTime = $(this).parent().parent().children().attr("uploadtime");
     var storage = window.localStorage;
     storage.setItem("videoTitle", videoTitle);
     storage.setItem("videoChannel", videoChannel);
+    storage.setItem("uploadTime", uploadTime);
 //    window.location.href = chartHtmlUrl;	// 当前页面打开
-    window.open(chartHtmlUrl + "?videoTitle=" + videoTitle + "&videoChannel=" + videoChannel);	// 新页面打开
+    window.open(chartHtmlUrl + "?videoTitle=" + videoTitle + "&videoChannel=" + videoChannel + "&uploadTime=" + uploadTime);	// 新页面打开
   });
   
   function setOperationDatas(){
