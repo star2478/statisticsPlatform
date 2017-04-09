@@ -39,7 +39,7 @@ $(document).ready(function() {
             if(responseObj.code == 200){
             	$("#channelList").append($("#channelListTmpl").tmpl(data.body));
             }else{
-               alert("get Channel Data Error,Msg:" + responseObj.message)
+               alert("get Channel Data Error,Msg:" + responseObj.message);
             }
         }
     });
@@ -67,7 +67,7 @@ $(document).ready(function() {
         	   result = responseObj;
         	   return ;
            }else{
-              alert("get Main Data Error, Msg:" + responseObj.message)
+              alert("get Main Data Error, Msg:" + responseObj.message);
            }
         }
      });

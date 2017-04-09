@@ -141,97 +141,29 @@ $(document).ready(function () {
              });
         }
         return chartDataList;
-    }
-    
-    function drawBaseInfoSelection(strategyName){
-   	 $.ajax({
-            type: 'POST',
-            url: getAllBaseInfoByKeyUrl,
-            async: false,
-            data: {
-                key: strategyName,
-            },
-            dataType: 'json',
-            success: function (data) {
-                var responseObj = eval(data);
-                if (responseObj.code == 0) {
-                    var fields = responseObj['data']['baseInfo'];
-                    if(fields != null && fields != undefined){
-                    	 var appID = fields['appID'];
-                    	 if(appID != null) {
-		                   	 for (var i = 0; i < appID.length; i++) {
-		                   	 	$('#appID').append("<option>" + appID[i] + "</option>");
-		                     }
-                    	 }
+    };
 
-	                     var os = fields['os'];
-	                     if(os != null) {
-		                   	 for (var i = 0; i < os.length; i++) {
-		                   	 	$('#os').append("<option>" + os[i] + "</option>");
-		                     }
-	                     }
-
-	                     var appVersion = fields['appVersion'];
-	                     if(appVersion != null) {
-	                    	 for (var i = 0; i < appVersion.length; i++) {
-	                    		 $('#appVersion').append("<option>" + appVersion[i] + "</option>");
-	                    	 }
-	                     }
-                    }
-                } else {
-                    alert("get All appData Error,Msg:" + responseObj.msg)
-                }
-            }
-        });
-   }
-    
-    function drawTriggerSelection(strategyName){
-    	 $.ajax({
-             type: 'POST',
-             url: getAllTriggersByKeyUrl,
-             async: false,
-             data: {
-                 key: strategyName,
-             },
-             dataType: 'json',
-             success: function (data) {
-                 var responseObj = eval(data);
-                 if (responseObj.code == 0) {
-                     var fields = responseObj['data'];
-                     if(fields != null && fields != undefined && fields.length > 0){
-                    	 var fieldsize = fields.length;
-                    	 for (var i = 0; i < fieldsize; i++) {
-                    	 	$('#triggerStrategyName').append("<option>" + fields[i] + "</option>");
-                     	}
-                     }
-                 } else {
-                     alert("get All appData Error,Msg:" + responseObj.msg)
-                 }
-             }
-         });
-    }
-
-    function drawCharts(seriesData) {
+    function drawCharts(seriesData, timeList) {
 //        var seriesData = requireChartData();
-        Highcharts.setOptions({
-            lang: {
-                months: ['1', '2', '3', '4', '5', '6', '7',
-                    '8', '9', '10', '11', '12']
-            }
-        });
+//         Highcharts.setOptions({
+//             lang: {
+//                 months: ['1', '2', '3', '4', '5', '6', '7',
+//                     '8', '9', '10', '11', '12']
+//             }
+//         });
         $('#chartDiv').highcharts({
             chart: {
                 type: 'spline'
             },
             title: {
-                text: $('#knowledgeStrategyName').val() + "数据分析"
+                text: getUrlParam("videoTitle") + "-" + "来自" + getUrlParam("videoChannel")
             },
             xAxis: {
-                type: 'datetime',
-                dateTimeLabelFormats: { // don't display the dummy year
-                    month: '%B/%e %H:%M'
-
-                }
+                // type: 'datetime',
+                // dateTimeLabelFormats: {
+                //     day: '%e. %b',
+                // }
+                categories : timeList
             },
             yAxis: {
                 title: {
@@ -241,69 +173,61 @@ $(document).ready(function () {
             },
             tooltip: {
                 formatter: function () {
-                    return '<b>' + timeFormat(new Date(this.x)) + '</b><br/>' +
-                    '<b>触发名:' + this.series.name + '</b><br/>' +
-                        '<b>' + '值:' + this.y + '</b><br/>';
+                    return '<b>' + '时间:' + this.x + '</b><br/>' +
+                        '<b>' + '播放量:' + this.y + '</b><br/>';
                 }
             },
             series: seriesData
         });
     };
 
-    function setClickListener(beginTimeObj, endTimeObj) {
-        $('#knowledgeStrategyName').change(function () {
-        	$('#appID').empty();
-        	$('#appID').append("<option>所有appID</option>");
-        	$('#os').empty();
-        	$('#os').append("<option>所有os</option>");
-        	$('#appVersion').empty();
-        	$('#appVersion').append("<option>所有版本号</option>");
-        	$('#triggerStrategyName').empty();
-        	$('#triggerStrategyName').append("<option>所有trigger</option>");
-        	drawBaseInfoSelection($('#knowledgeStrategyName').val());
-        	drawTriggerSelection($('#knowledgeStrategyName').val());
-//            drawCharts();
-        });
-//        $('#triggerStrategyName').change(function () {
-//            drawCharts();
-//        });
-//        rome(beginTimeObj).on('data', function () {
-//            drawCharts();
-//        });
-//        rome(endTimeObj).on('data', function () {
-//            drawCharts();
-//        });
-
-    };
-
     function init() {
-    	var aaa=getUrlParam("videoTitle");
-    	$("#searchTitle").val(aaa);
-    	$("#channelList").val(aaa);
-        var storage = window.localStorage;
-        var strategyName = storage.getItem("strategyName")
+        // var storage = window.localStorage;
+        // var strategyName = storage.getItem("strategyName")
+    	var videoTitle = getUrlParam("videoTitle");
+        var videoChannel = getUrlParam("videoChannel");
+        var uploadTime = getUrlParam("uploadTime");
+        var beginTime = $("#beginTime").html();
+        var endTime = $("#endTime").html();
 
-        //初始化知识策略名输入框start
+        var chartDataList = [];
+        // 获取beginTime到endTime之间的统计数据
          $.ajax({
              type: 'GET',
-             url: getAllKnowledeNameUrl,
+             url: getVideoDailyCountUrl,
              async: false,
+             data: {
+                 title: videoTitle,
+                 channel: videoChannel,
+                 uploadTime: uploadTime,
+                 beginTime: beginTime,
+                 endTime: endTime
+             },
              dataType: 'json',
              success: function (data) {
                  var responseObj = eval(data);
-                 if (responseObj.code == 0) {
-                     strategys = responseObj['data'];
-                     for (var i = 0; i < strategys.length; i++) {
-                         $('#knowledgeStrategyName').append("<option>" + strategys[i] + "</option>");
+                 if(responseObj.code == 200) {
+
+                     var playCountList= responseObj.body;
+                     var dataList = new Array();
+                     var timeList = [];
+                     for (var i = 0; i < playCountList.length; i++) {
+                         var value = playCountList[i]['playCount'];
+                         var time = playCountList[i]['date'];
+                         dataList.push([time, value]);
+                         timeList.push(time);
                      }
-                     $('#knowledgeStrategyName').val(strategyName);
+                     var jsonObj = {
+                        name: "播放量",
+                        data: dataList
+                     }
+                     chartDataList.push(jsonObj);
                  } else {
-                     alert("get All appData Error,Msg:" + responseObj.msg)
+                     alert(responseObj.message);
                  }
+                 drawCharts(chartDataList, timeList);
              }
          });
-
-        setClickListener(beginTimeObj, endTimeObj);
     }
 
     init();

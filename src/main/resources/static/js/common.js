@@ -1,8 +1,9 @@
 var hostUri = 'http://'+window.location.host;
 var getVideoInfoByPageUrl = hostUri + "/getVideoInfoByPage";
 var getChannelListUrl = hostUri + "/getChannelList";
+var getVideoDailyCountUrl = hostUri + "/getVideoDailyCount";
 var chartHtmlUrl = hostUri + "/chart.html";
-var eachPageNum = 2;
+var eachPageNum = 30;
 
 var getStatByKeyAndTriggerAndBaseInfoUrl = hostUri + "/fsg/strategy/getStatByKeyAndTriggerAndBaseInfo";
 var getStatByKeyUrl = hostUri + "/fsg/strategy/getStatByKey";

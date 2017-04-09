@@ -28,6 +28,7 @@ public class VideoDailyCountDAOImpl{
 	@Autowired
 	protected MongoTemplate mongoTemplate;
 
+	// {"videoId" : "58e27416343e55c71cc8d213", "date" : "2017-04-08", "playCount" : 5 }
 	public List<VideoDailyCountDTO> getVideoDailyCount(List<String> videoIds, String beginTime, String endTime) {
 		Criteria criteria = new Criteria().where("videoId").in(videoIds);
 		if (StringUtils.isNotEmpty(beginTime) && StringUtils.isNotEmpty(endTime)) {

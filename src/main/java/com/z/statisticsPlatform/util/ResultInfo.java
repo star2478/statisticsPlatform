@@ -24,6 +24,12 @@ public class ResultInfo{
 		this.body = "";
 	}
 
+	public ResultInfo(String code, String message, Object body) {
+		this.code = code;
+		this.message = message;
+		this.body = body;
+	}
+
 	public ResultInfo(String code, Object body) {
 		this.code = code;
 		this.message = ResponseUtil.getMsgByCode(code);

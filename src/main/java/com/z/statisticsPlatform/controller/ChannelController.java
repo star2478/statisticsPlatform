@@ -32,6 +32,7 @@ public class ChannelController {
 	 */
     @RequestMapping(value = "/getChannelList")
     public ResultInfo getChannelList() {
+    	logger.info(getClass().getName() + ".getChannelList begin");
     	List<String> groups = Arrays.asList("优酷", "腾讯视频", "搜狐视频", "爱奇艺", "乐视视频", "A站", "B站", "土豆", "美拍", "Youtube", "第一视频", "梨视频", "人人视频", "百度百家号", "360影视", "今日头条", "ZAKER", "UC", "一点咨讯", "天天快报", "凤凰网", "北京时间", "搜狐新闻", "秒拍");
 		Comparator<Object> comp = Collator.getInstance(java.util.Locale.CHINA);
 	    int size = groups.size();
