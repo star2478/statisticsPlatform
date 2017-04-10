@@ -32,7 +32,7 @@ public interface VideoInfoDAO  extends MongoRepository<VideoInfoDTO, Long> {
 	 * @param channel
 	 * @return
 	 */
-	public VideoInfoDTO getVideoInfo(String title, String channel, String uploadTime);
+	public VideoInfoDTO getVideoInfo(String link, String channel);
 	
 	
 }

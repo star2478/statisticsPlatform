@@ -153,15 +153,16 @@ $(document).ready(function() {
   
   // 点击历史图表
   $(document).on('click','.showChartBtn',function(){
-    var videoTitle = $(this).parent().parent().children().attr("videotitle");
+    // var videoTitle = $(this).parent().parent().children().attr("videotitle");
+    var videoLink = $(this).parent().parent().children().attr("videolink");
     var videoChannel = $(this).parent().parent().children().attr("videochannel");
-    var uploadTime = $(this).parent().parent().children().attr("uploadtime");
-    var storage = window.localStorage;
-    storage.setItem("videoTitle", videoTitle);
-    storage.setItem("videoChannel", videoChannel);
-    storage.setItem("uploadTime", uploadTime);
+    // var uploadTime = $(this).parent().parent().children().attr("uploadtime");
+    // var storage = window.localStorage;
+    // storage.setItem("videoTitle", videoTitle);
+    // storage.setItem("videoChannel", videoChannel);
+    // storage.setItem("uploadTime", uploadTime);
 //    window.location.href = chartHtmlUrl;	// 当前页面打开
-    window.open(chartHtmlUrl + "?videoTitle=" + videoTitle + "&videoChannel=" + videoChannel + "&uploadTime=" + uploadTime);	// 新页面打开
+    window.open(chartHtmlUrl + "?link=" + videoLink + "&channel=" + videoChannel);	// 新页面打开
   });
   
   function setOperationDatas(){

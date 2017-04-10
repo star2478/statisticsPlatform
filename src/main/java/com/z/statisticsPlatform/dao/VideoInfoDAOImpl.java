@@ -56,8 +56,8 @@ public class VideoInfoDAOImpl {
 		return results.getMappedResults();
 	}
 	
-	public VideoInfoDTO getVideoInfo(String title, String channel, String uploadTime) {
-		Criteria criteria = new Criteria().where("title").is(title).and("channel").is(channel).and("uploadTime").is(uploadTime);
+	public VideoInfoDTO getVideoInfo(String link, String channel) {
+		Criteria criteria = new Criteria().where("link").is(link).and("channel").is(channel);
 		Query query = new Query(criteria);
 		return mongoTemplate.findOne(query, VideoInfoDTO.class);
 	}

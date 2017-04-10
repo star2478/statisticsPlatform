@@ -80,7 +80,7 @@
 			<tbody>
 				{{each(i,video) body.videos}}
 					<tr>
-	          			<td videotitle="${video.title}"><a href="${video.link}" target="_black">${video.title}</a></td>
+	          			<td videotitle="${video.title} videolink="${video.link}"><a href="${video.link}" target="_black">${video.title}</a></td>
 						<td videochannel="${video.channel}">${video.channel}</td>
 						<td uploadtime="${video.uploadTime}">${video.uploadTime}</td>
 						<td>${video.playCount}</td>

@@ -143,7 +143,7 @@ $(document).ready(function () {
         return chartDataList;
     };
 
-    function drawCharts(seriesData, timeList) {
+    function drawCharts(seriesData, timeList, title) {
 //        var seriesData = requireChartData();
 //         Highcharts.setOptions({
 //             lang: {
@@ -156,7 +156,7 @@ $(document).ready(function () {
                 type: 'spline'
             },
             title: {
-                text: getUrlParam("videoTitle") + "-" + "来自" + getUrlParam("videoChannel")
+                text: title + "-" + "来自" + getUrlParam("channel")
             },
             xAxis: {
                 // type: 'datetime',
@@ -184,9 +184,10 @@ $(document).ready(function () {
     function init() {
         // var storage = window.localStorage;
         // var strategyName = storage.getItem("strategyName")
-    	var videoTitle = getUrlParam("videoTitle");
-        var videoChannel = getUrlParam("videoChannel");
-        var uploadTime = getUrlParam("uploadTime");
+        // var title = getUrlParam("title");
+        var link = getUrlParam("link");
+        var channel = getUrlParam("channel");
+        // var uploadTime = getUrlParam("uploadTime");
         var beginTime = $("#beginTime").html();
         var endTime = $("#endTime").html();
 
@@ -197,9 +198,10 @@ $(document).ready(function () {
              url: getVideoDailyCountUrl,
              async: false,
              data: {
-                 title: videoTitle,
-                 channel: videoChannel,
-                 uploadTime: uploadTime,
+                 // title: title,
+                 link: link,
+                 channel: channel,
+                 // uploadTime: uploadTime,
                  beginTime: beginTime,
                  endTime: endTime
              },
@@ -208,7 +210,7 @@ $(document).ready(function () {
                  var responseObj = eval(data);
                  if(responseObj.code == 200) {
 
-                     var playCountList= responseObj.body;
+                     var playCountList= responseObj.body.dailyCount;
                      var dataList = new Array();
                      var timeList = [];
                      for (var i = 0; i < playCountList.length; i++) {
@@ -222,10 +224,10 @@ $(document).ready(function () {
                         data: dataList
                      }
                      chartDataList.push(jsonObj);
+                     drawCharts(chartDataList, timeList, responseObj.body.title);
                  } else {
                      alert(responseObj.message);
                  }
-                 drawCharts(chartDataList, timeList);
              }
          });
     }

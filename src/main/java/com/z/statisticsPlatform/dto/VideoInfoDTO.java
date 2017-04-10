@@ -13,7 +13,8 @@ import org.springframework.stereotype.Component;
 @Document(collection = "videoInfo")
 @Component("VideoInfoDTO")
 @CompoundIndexes({
-	@CompoundIndex(background = true, unique = true, name = "utc_uidx", def = "{'uploadTime': -1, 'title': -1, 'channel': -1}")
+//	@CompoundIndex(background = true, unique = true, name = "utc_uidx", def = "{'uploadTime': -1, 'title': -1, 'channel': -1}")
+	@CompoundIndex(background = true, unique = true, name = "lc_uidx", def = "{'link': -1, 'channel': -1}")
 })
 public class VideoInfoDTO {
 

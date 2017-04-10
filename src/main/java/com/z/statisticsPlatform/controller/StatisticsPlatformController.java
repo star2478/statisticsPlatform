@@ -12,6 +12,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import com.z.statisticsPlatform.vo.GetVideoDailyCountVO;
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,20 +97,19 @@ public class StatisticsPlatformController {
         
     /**
      * 获取指定视频日播放量
-     * @param title
+     * @param link
      * @param channel
-     * @param updateTime
      * @param beginTime
      * @param endTime
      * @return
      */
     @RequestMapping(value = "/getVideoDailyCount")
-    public ResultInfo getVideoDailyCount(String title, String channel, String uploadTime, String beginTime, String endTime) {
+    public ResultInfo getVideoDailyCount(String link, String channel, String beginTime, String endTime) {
 		logger.info(getClass().getName() + ".getVideoDailyCount begin");
 		try {
 			// 参数检查
-			if(title == null || channel == null || uploadTime == null || beginTime == null || endTime == null) {
-				logger.error("param fail, title=" + title + ", channel=" + channel + ", uploadTime=" + uploadTime
+			if(link == null || channel == null || beginTime == null || endTime == null) {
+				logger.error("param fail, link=" + link + ", channel=" + channel
 						+ ", beginTime=" + beginTime + ", endTime=" + endTime);
 				return new ResultInfo(ResponseUtil.param_error_code);
 			}
@@ -118,25 +118,29 @@ public class StatisticsPlatformController {
 				return new ResultInfo(ResponseUtil.param_error_code, "最多允许查询" + MAX_BETWEEN_DAYS + "天内数据", null);
 			}
 
-			VideoInfoDTO videoInfoDTO = videoInfoDAO.getVideoInfo(title, channel, uploadTime);
+			GetVideoDailyCountVO result = new GetVideoDailyCountVO();
+
+			VideoInfoDTO videoInfoDTO = videoInfoDAO.getVideoInfo(link, channel);
 			if(videoInfoDTO == null) {
 				return new ResultInfo(ResponseUtil.success_code, null);
 			}
 			String videoId = videoInfoDTO.get_id();
 			List<String> videoIds = new ArrayList<String>();
 			videoIds.add(videoId);
-			List<VideoDailyCountDTO> videoInfoDTOs = videoDailyCountDAO.getVideoDailyCount(videoIds, beginTime, endTime);
+			List<VideoDailyCountDTO> videoDailyCountDTOs = videoDailyCountDAO.getVideoDailyCount(videoIds, beginTime, endTime);
 
-			List<VideoDailyCountDTO> result = initVideoDailyCount(beginTime, endTime);
-			for (VideoDailyCountDTO videoDailyCountDTO: videoInfoDTOs) {
+			List<VideoDailyCountDTO> initCountList = initVideoDailyCount(beginTime, endTime);
+			for (VideoDailyCountDTO videoDailyCountDTO: videoDailyCountDTOs) {
 				String date = videoDailyCountDTO.getDate();
-				for (VideoDailyCountDTO dateVideo: result) {
+				for (VideoDailyCountDTO dateVideo: initCountList) {
 					if(dateVideo.getDate().equals(date)) {
 						dateVideo.setPlayCount(videoDailyCountDTO.getPlayCount());
 						break;
 					}
 				}
 			}
+			result.setTitle(videoInfoDTO.getTitle());
+			result.setDailyCount(initCountList);
 
 			return new ResultInfo(ResponseUtil.success_code, result);
 		} catch (Exception e) {
