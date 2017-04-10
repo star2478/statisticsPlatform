@@ -7,12 +7,15 @@ import java.util.List;
 import java.util.Map;
 
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 import com.z.statisticsPlatform.vo.GetVideoDailyCountVO;
+import com.z.statisticsPlatform.vo.GetVideoDailyCountVO.VideoDailyCountSubVO;
+
 import org.apache.catalina.filters.AddDefaultCharsetFilter;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +41,8 @@ public class StatisticsPlatformController {
 	private final Logger logger = Logger.getLogger(getClass());
 
 	private final static int MAX_BETWEEN_DAYS = 90;	// 最多允许查询90天内数据
+	
+	private final static long ONE_DATE_MILL_SECONDS = 24*3600*1000;	//一天的ms数
 	
 	@Autowired
 	private VideoInfoDAO videoInfoDAO;
@@ -125,11 +130,13 @@ public class StatisticsPlatformController {
 				return new ResultInfo(ResponseUtil.success_code, null);
 			}
 			String videoId = videoInfoDTO.get_id();
+
+			// 初始化返回数据
+			List<VideoDailyCountDTO> initCountList = initVideoDailyCount(beginTime, endTime);
+			
 			List<String> videoIds = new ArrayList<String>();
 			videoIds.add(videoId);
 			List<VideoDailyCountDTO> videoDailyCountDTOs = videoDailyCountDAO.getVideoDailyCount(videoIds, beginTime, endTime);
-
-			List<VideoDailyCountDTO> initCountList = initVideoDailyCount(beginTime, endTime);
 			for (VideoDailyCountDTO videoDailyCountDTO: videoDailyCountDTOs) {
 				String date = videoDailyCountDTO.getDate();
 				for (VideoDailyCountDTO dateVideo: initCountList) {
@@ -139,8 +146,9 @@ public class StatisticsPlatformController {
 					}
 				}
 			}
+			
+			result.setDailyCount(calGrowthRate(videoIds, initCountList));
 			result.setTitle(videoInfoDTO.getTitle());
-			result.setDailyCount(initCountList);
 
 			return new ResultInfo(ResponseUtil.success_code, result);
 		} catch (Exception e) {
@@ -186,7 +194,7 @@ public class StatisticsPlatformController {
 			Calendar calendar = Calendar.getInstance();
 			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 			Date beginDate = dateFormat.parse(beginTime);	// 开始时间
-			Date endDate = dateFormat.parse(endTime);	// 结束时间
+			Date endDate = new Date(dateFormat.parse(endTime).getTime() + ONE_DATE_MILL_SECONDS);	// 结束时间
 			Date date = beginDate;
 			while (!date.equals(endDate)) {
 				VideoDailyCountDTO videoInfoDTO = new VideoDailyCountDTO();
@@ -197,14 +205,58 @@ public class StatisticsPlatformController {
 				calendar.add(Calendar.DATE, 1); // 日期加1天
 				date = calendar.getTime();
 			}
-			// 加上最后一天
-			VideoDailyCountDTO videoInfoDTO = new VideoDailyCountDTO();
-			videoInfoDTO.setDate(dateFormat.format(date));
-			videoInfoDTO.setPlayCount(0l);
-			videoInfoDTOs.add(videoInfoDTO);
+//			// 加上最后一天
+//			VideoDailyCountDTO videoInfoDTO = new VideoDailyCountDTO();
+//			videoInfoDTO.setDate(dateFormat.format(date));
+//			videoInfoDTO.setPlayCount(0l);
+//			videoInfoDTOs.add(videoInfoDTO);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return videoInfoDTOs;
+	}
+	
+	/**
+	 * 计算增长率
+	 * @param videoIds
+	 * @param initCountList
+	 * @throws ParseException 
+	 */
+	private List<VideoDailyCountSubVO> calGrowthRate(List<String> videoIds, List<VideoDailyCountDTO> initCountList) throws ParseException {
+		List<VideoDailyCountSubVO> result = new ArrayList<VideoDailyCountSubVO>();
+		if (initCountList == null || initCountList.size() <= 0) {
+			return result;
+		}
+		GetVideoDailyCountVO vo = new GetVideoDailyCountVO();
+		float curPlayCount = 0, prePlayCount = 0;
+		DecimalFormat decimalFormat = new DecimalFormat(".00");
+		
+		// 获取整个数据更早一天的数据，用以计算第一天数据的增长率
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String firstTime = initCountList.get(0).getDate();
+        String preDate = dateFormat.format(new Date(dateFormat.parse(firstTime).getTime() - ONE_DATE_MILL_SECONDS));
+        List<VideoDailyCountDTO> preDateVideoDailyCount = videoDailyCountDAO.getVideoDailyCount(videoIds, preDate, preDate);
+        if(preDateVideoDailyCount != null && preDateVideoDailyCount.size() > 0) {
+        	prePlayCount = preDateVideoDailyCount.get(0).getPlayCount();
+        }
+        
+		for (VideoDailyCountDTO videoDailyCountDTO : initCountList) {
+			VideoDailyCountSubVO videoDailyCountSubVO = vo.new VideoDailyCountSubVO();
+			videoDailyCountSubVO.setDate(videoDailyCountDTO.getDate());
+			videoDailyCountSubVO.setPlayCount(videoDailyCountDTO.getPlayCount());
+			curPlayCount = videoDailyCountSubVO.getPlayCount();
+			if(curPlayCount == prePlayCount) {
+				videoDailyCountSubVO.setGrowthRate(0f);	// 如果相邻两天播放量一样，则增长率为0
+			} else if (prePlayCount == 0) {
+				videoDailyCountSubVO.setGrowthRate(null);	// 如果从0增长到正数，则增长率为null
+			} else {
+				String growthRateStr = decimalFormat.format((curPlayCount - prePlayCount)*100/prePlayCount);
+				videoDailyCountSubVO.setGrowthRate(Float.valueOf(growthRateStr));
+			}
+			
+			prePlayCount = curPlayCount;
+			result.add(videoDailyCountSubVO);
+		}
+		return result;
 	}
 }

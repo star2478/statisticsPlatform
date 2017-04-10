@@ -9,6 +9,7 @@ import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.stereotype.Component;
 
+import com.z.statisticsPlatform.dto.VideoDailyCountDTO;
 import com.z.statisticsPlatform.dto.VideoInfoDTO;
 
 /**
@@ -26,5 +27,4 @@ public class GetVideoInfoByPageVO extends PageVO {
 	public void setVideos(List<VideoInfoDTO> videos) {
 		this.videos = videos;
 	}
-
 }

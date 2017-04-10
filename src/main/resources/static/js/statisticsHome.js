@@ -12,12 +12,18 @@ $(document).ready(function() {
   
   refreshMainData();
 
+  // 在endTime后面加上hour、minute、second
+  function addHMSTimeOnEndTime(endTime) {
+	  return endTime + " 23:59:59";
+  }
+  
   function refreshMainData(){
 	getChannelList();
 	var searchTitle = $('#searchTitle').val();
 	var channel = $("#channelList").val();
 	var beginTime = $("#beginTime").html();
-	var endTime = $("#endTime").html();
+	var endTime = addHMSTimeOnEndTime($("#endTime").html());
+//	alert(endTime);
 	var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
 //    var firstReturnData = ajaxMainData(1, eachPageNum, null, null, null, null);
     if (firstReturnData != undefined) {
@@ -104,7 +110,7 @@ $(document).ready(function() {
 	  var searchTitle = $('#searchTitle').val();
 	  var channel = $("#channelList").val();
 	  var beginTime = $("#beginTime").html();
-	  var endTime = $("#endTime").html();
+	  var endTime = addHMSTimeOnEndTime($("#endTime").html());
 	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
 	  if (firstReturnData != undefined) {
 	      tabActiveChange($('#statisticsMain'))
@@ -122,7 +128,7 @@ $(document).ready(function() {
 	  var searchTitle = $('#searchTitle').val();
 	  var channel = $("#channelList").val();
 	  var beginTime = $("#beginTime").html();
-	  var endTime = $("#endTime").html();
+	  var endTime = addHMSTimeOnEndTime($("#endTime").html());
 	  var pageNo = $("#prePage").attr("data-page");
 	  var firstReturnData = ajaxMainData(pageNo-1, eachPageNum, searchTitle, channel, beginTime, endTime);
 	  if (firstReturnData != undefined) {
@@ -141,7 +147,7 @@ $(document).ready(function() {
 	  var searchTitle = $('#searchTitle').val();
 	  var channel = $("#channelList").val();
 	  var beginTime = $("#beginTime").html();
-	  var endTime = $("#endTime").html();
+	  var endTime = addHMSTimeOnEndTime($("#endTime").html());
 	  var pageNo = $("#nextPage").attr("data-page");
 	  var firstReturnData = ajaxMainData(pageNo, eachPageNum, searchTitle, channel, beginTime, endTime);
 	  if (firstReturnData != undefined) {
