@@ -160,8 +160,8 @@ $(document).ready(function() {
   // 点击历史图表
   $(document).on('click','.showChartBtn',function(){
     // var videoTitle = $(this).parent().parent().children().attr("videotitle");
-    var videoLink = $(this).parent().parent().children().attr("videolink");
-    var videoChannel = $(this).parent().parent().children().attr("videochannel");
+    var videoLink = $(this).parent().parent().children().eq(0).attr("videolink");
+    var videoChannel = $(this).parent().parent().children().eq(1).attr("videochannel");
     // var uploadTime = $(this).parent().parent().children().attr("uploadtime");
     // var storage = window.localStorage;
     // storage.setItem("videoTitle", videoTitle);
