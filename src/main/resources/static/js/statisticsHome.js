@@ -95,6 +95,19 @@ $(document).ready(function() {
     $('#statisticsMainTmpl').tmpl(jsonData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
   }
   
+  function buildVideoListTmpl() {
+	  var searchTitle = $('#searchTitle').val();
+	  var channel = $("#channelList").val();
+	  var beginTime = $("#beginTime").html();
+	  var endTime = addHMSTimeOnEndTime($("#endTime").html());
+	  var firstReturnData = ajaxMainData(1, eachPageNum, searchTitle, channel, beginTime, endTime);
+	  if (firstReturnData != undefined) {
+	      tabActiveChange($('#statisticsMain'))
+	      $('#videoListTmpl').html('');
+	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
+	  }
+  }
+  
   // 点击统计tab页
   $(document).on('click','#statisticsMain',function(){
     var returnData = ajaxMainData(1, eachPageNum, null, null, null, null);
@@ -117,6 +130,19 @@ $(document).ready(function() {
 	      $('#videoListTmpl').html('');
 	      $('#statisticsMainTmpl').tmpl(firstReturnData,{makeArrayForEach: makeArrayForEach}).appendTo('#videoListTmpl');
 	  }
+  });
+  
+  // 触发结束时间事件
+  $(document).on('click','#endTime',function(){
+	  buildVideoListTmpl();
+  });
+  // 触发起始时间事件
+  $(document).on('click','#beginTime',function(){
+	  buildVideoListTmpl();
+  });
+  // 触发渠道select事件
+  $('#channelList').change(function(){
+	  buildVideoListTmpl();
   });
   
   // 点击上一页
@@ -160,8 +186,8 @@ $(document).ready(function() {
   // 点击历史图表
   $(document).on('click','.showChartBtn',function(){
     // var videoTitle = $(this).parent().parent().children().attr("videotitle");
-    var videoLink = $(this).parent().parent().children().eq(0).attr("videolink");
-    var videoChannel = $(this).parent().parent().children().eq(1).attr("videochannel");
+    var videoLink = $(this).parent().parent().children().eq(1).attr("videolink");
+    var videoChannel = $(this).parent().parent().children().eq(2).attr("videochannel");
     // var uploadTime = $(this).parent().parent().children().attr("uploadtime");
     // var storage = window.localStorage;
     // storage.setItem("videoTitle", videoTitle);
