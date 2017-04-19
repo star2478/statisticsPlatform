@@ -1,6 +1,7 @@
 package com.z.statisticsPlatform.dao;
 
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -34,7 +35,9 @@ public class VideoInfoDAOImpl {
 	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit, String title, String channel, String beginTime, String endTime) {
 		Criteria criteria = new Criteria();
 		if (StringUtils.isNotEmpty(title)) {
-			Pattern pattern = Pattern.compile("^.*"+title+".*$", Pattern.CASE_INSENSITIVE);
+			String [] arrTitle = title.trim().split("\\s+");
+			List<String> list = Arrays.asList(arrTitle);
+			Pattern pattern = Pattern.compile("^.*("+String.join("|", arrTitle)+").*$", Pattern.CASE_INSENSITIVE);
 			criteria.and("title").regex(pattern);
 		}
 		if (StringUtils.isNotEmpty(channel)) {

@@ -64,6 +64,16 @@ $(document).ready(function () {
              }
          });
     };
+    
+
+    // 触发结束时间事件
+    $(document).on('click','#endTime',function(){
+    	mainChartData();
+    });
+    // 触发起始时间事件
+    $(document).on('click','#beginTime',function(){
+    	mainChartData();
+    });
 	
     // 点击search按钮
     $(document).on('click','#searchStatistics',function(){

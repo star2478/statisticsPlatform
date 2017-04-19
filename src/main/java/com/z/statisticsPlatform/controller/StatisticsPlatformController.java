@@ -58,7 +58,7 @@ public class StatisticsPlatformController {
      */
     @RequestMapping(value = "/getVideoInfoByPage")
     public ResultInfo getVideoInfoByPage(Integer pageNo, Integer limit, String title, String channel, String beginTime, String endTime) {
-		logger.info(getClass().getName() + ".getVideoInfoByPage begin");
+		logger.info(getClass().getName() + ".getVideoInfoByPage  begin");
     	// 参数检查
     	if(pageNo == null || limit == null) {
 			logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit);
