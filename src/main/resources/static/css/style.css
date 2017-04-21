@@ -53,3 +53,8 @@ body{
 	 word-wrap: break-word;
 	 word-break: break-all;"
 }
+
+.tableTdWidth{
+  width: 350px;
+}
+

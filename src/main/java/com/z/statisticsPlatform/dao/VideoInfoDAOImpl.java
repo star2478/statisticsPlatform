@@ -36,7 +36,6 @@ public class VideoInfoDAOImpl {
 		Criteria criteria = new Criteria();
 		if (StringUtils.isNotEmpty(title)) {
 			String [] arrTitle = title.trim().split("\\s+");
-			List<String> list = Arrays.asList(arrTitle);
 			Pattern pattern = Pattern.compile("^.*("+String.join("|", arrTitle)+").*$", Pattern.CASE_INSENSITIVE);
 			criteria.and("title").regex(pattern);
 		}

@@ -144,6 +144,12 @@ $(document).ready(function() {
   $('#channelList').change(function(){
 	  buildVideoListTmpl();
   });
+  // 触发标题事件
+  $(document).on('keypress','#searchTitle',function(event){
+	  if(event.keyCode == "13") {
+		  buildVideoListTmpl();
+	  }
+  });
   
   // 点击上一页
   $(document).on('click','#prePage',function(){
