@@ -1,6 +1,3 @@
-
-var triggerModifyJqObj = null
-
 $(document).ready(function() {
   var makeArrayForEach = function(word, size){
     var i, result = [];

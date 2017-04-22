@@ -45,7 +45,9 @@
      				</div>
      				
 				    <div class="form-group">
-						<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+						<a id="exportChartStatistics"  onclick="clickChartExport(this)" download="dailycount.csv" href="#">
+							<button type="button" class="btn btn-default" >导出</button>
+						</a>
 					</div>
 				</form>
 			</div>
@@ -65,6 +67,39 @@
     <script src="js/statisticsChart.js"></script>
   	<script src="js/plugins/laydate/laydate.js"></script>
     
+    <script>  
+    function clickChartExport(aLink) {
+		var urlInfo = GetRequest();
+      	var link = urlInfo["link"];
+      	var channel = urlInfo["channel"];
+	  	var beginTime = $("#beginTime").html();
+	  	var endTime = $("#endTime").html()  + " 23:59:59";
+        $.ajax({
+             type:'GET',
+             url: getVideoDailyCountForExportUrl,
+             data:{
+               link : link,
+               channel : channel,
+               beginTime : beginTime,
+               endTime : endTime,
+             },
+             async:false,
+             dataType:'json',
+             success:function  (data) {
+                var responseObj = eval(data);
+                if(responseObj.code == 200){
+             	   var str = responseObj.body;  
+                   str =  encodeURIComponent(str);  
+                   aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;
+             	   return ;
+                }else{
+                   alert("clickExport Error, Msg:" + responseObj.message);
+                }
+             }
+          });
+    }  
+  	</script>
+  	
     <script>
 		$("#beginTime").html(laydate.now(-7));
   		$("#endTime").html(laydate.now(0));

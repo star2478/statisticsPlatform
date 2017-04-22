@@ -2,16 +2,10 @@ var hostUri = 'http://'+window.location.host;
 var getVideoInfoByPageUrl = hostUri + "/getVideoInfoByPage";
 var getChannelListUrl = hostUri + "/getChannelList";
 var getVideoDailyCountUrl = hostUri + "/getVideoDailyCount";
+var getVideoInfoForExportUrl = hostUri + "/getVideoInfoForExport";
+var getVideoDailyCountForExportUrl = hostUri + "/getVideoDailyCountForExport";
 var chartHtmlUrl = hostUri + "/chart.html";
 var eachPageNum = 30;
-
-var getStatByKeyAndTriggerAndBaseInfoUrl = hostUri + "/fsg/strategy/getStatByKeyAndTriggerAndBaseInfo";
-var getStatByKeyUrl = hostUri + "/fsg/strategy/getStatByKey";
-var getStatByKeyAndFieldUrl = hostUri + "/fsg/strategy/getStatByKeyAndField";
-var getAllKnowledeNameUrl = hostUri + "/fsg/strategy/getAllPersistentedStrategy";
-var getAllFieldByKeyUrl = hostUri + "/fsg/strategy/getAllFieldByKey";
-var getAllTriggersByKeyUrl = hostUri + "/fsg/strategy/getAllTriggersByKey";
-var getAllBaseInfoByKeyUrl = hostUri + "/fsg/strategy/getAllBaseInfoByKey";
 
 function splitTimeToSeconds(time) {
     var year = time.split('-')[0];
@@ -54,6 +48,8 @@ function getUrlParam(name) {
     }
     return null; //返回参数值
 }
+
+//获取url中的参数
 function GetRequest() { 
 	var url = location.search; //获取url中"?"符后的字串 
 	var theRequest = new Object(); 

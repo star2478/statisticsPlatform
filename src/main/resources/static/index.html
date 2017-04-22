@@ -56,7 +56,7 @@
      				
 				    <div class="form-group alignRight">
 						
-							<a id="exportHomeStatistics"  onclick="clickExport(this)" download="downlaod.csv" href="#">
+							<a id="exportHomeStatistics"  onclick="clickHomeExport(this)" download="downlaod.csv" href="#">
 							<!-- <a id="exportHomeStatistics" download="downlaod.csv" href="#"> -->
 								<button type="button" class="btn btn-default" >导出</button>
 							</a>
@@ -78,7 +78,7 @@
 	          		<th>标题</th>
 					<th>渠道</th>
 					<th>上传时间</th>
-	          		<th>播放量</th>
+	          		<th>累计播放量</th>
 					<th>操作</th>
 	        	</tr>
 	      	</thead>
@@ -125,12 +125,34 @@
   	<script src="js/plugins/laydate/laydate.js"></script>
   		
     <script>  
-    function clickExport(aLink) {  
-         var str = "col1,col2,col3\n三木,value2,value3";  
-         str =  encodeURIComponent(str);  
-         aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;  
-         hlxhlx();
-         /* aLink.click();   */
+    function clickHomeExport(aLink) {
+	  	var searchTitle = $('#searchTitle').val();
+	  	var channel = $("#channelList").val();
+	  	var beginTime = $("#beginTime").html();
+	  	var endTime = $("#endTime").html()  + " 23:59:59"; 
+		$.ajax({
+             type:'GET',
+             url: getVideoInfoForExportUrl,
+             data:{
+               title : searchTitle,
+               channel : channel,
+               beginTime : beginTime,
+               endTime : endTime,
+             },
+             async:false,
+             dataType:'json',
+             success:function  (data) {
+                var responseObj = eval(data);
+                if(responseObj.code == 200){
+             	   var str = responseObj.body;  
+                   str =  encodeURIComponent(str);  
+                   aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;
+             	   return ;
+                }else{
+                   alert("clickExport Error, Msg:" + responseObj.message);
+                }
+             }
+          });
     }  
   	</script>  
   

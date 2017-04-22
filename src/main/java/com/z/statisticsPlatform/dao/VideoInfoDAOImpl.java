@@ -58,6 +58,30 @@ public class VideoInfoDAOImpl {
 		return results.getMappedResults();
 	}
 	
+	public List<VideoInfoDTO> getVideoInfos(String title, String channel, String beginTime, String endTime) {
+		Criteria criteria = new Criteria();
+		if (StringUtils.isNotEmpty(title)) {
+			String [] arrTitle = title.trim().split("\\s+");
+			Pattern pattern = Pattern.compile("^.*("+String.join("|", arrTitle)+").*$", Pattern.CASE_INSENSITIVE);
+			criteria.and("title").regex(pattern);
+		}
+		if (StringUtils.isNotEmpty(channel)) {
+			criteria.and("channel").is(channel);
+		}
+		if (StringUtils.isNotEmpty(beginTime) && StringUtils.isNotEmpty(endTime)) {
+			criteria.and("uploadTime").gte(beginTime).lte(endTime);
+		}
+		Aggregation aggreResult = Aggregation.newAggregation(
+				Aggregation.match(criteria),
+        		Aggregation.sort(Sort.Direction.DESC, "uploadTime")
+        );
+          
+        AggregationResults<VideoInfoDTO> results = mongoTemplate.aggregate(aggreResult, 
+        		VIDEO_INFO_COL,
+        		VideoInfoDTO.class);
+		return results.getMappedResults();
+	}
+	
 	public VideoInfoDTO getVideoInfo(String link, String channel) {
 		Criteria criteria = new Criteria().where("link").is(link).and("channel").is(channel);
 		Query query = new Query(criteria);
