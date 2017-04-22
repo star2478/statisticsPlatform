@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8" />
+<meta http-equiv="content-type" content="text/html;charset=UTF-8" />
 <title>统计平台</title>
 <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 <style type="text/css">
@@ -55,7 +55,12 @@
      				</div>
      				
 				    <div class="form-group alignRight">
-						<button id="exportStatistics" type="button" class="btn btn-default">导出</button>
+						
+							<a id="exportHomeStatistics"  onclick="clickExport(this)" download="downlaod.csv" href="#">
+							<!-- <a id="exportHomeStatistics" download="downlaod.csv" href="#"> -->
+								<button type="button" class="btn btn-default" >导出</button>
+							</a>
+						
 					</div>
 				</div>
 			</div>
@@ -119,6 +124,16 @@
 	<script src="js/statisticsHome.js"></script>
   	<script src="js/plugins/laydate/laydate.js"></script>
   		
+    <script>  
+    function clickExport(aLink) {  
+         var str = "col1,col2,col3\n三木,value2,value3";  
+         str =  encodeURIComponent(str);  
+         aLink.href = "data:text/csv;charset=utf-8,\ufeff"+str;  
+         hlxhlx();
+         /* aLink.click();   */
+    }  
+  	</script>  
+  
     <script>
 		$("#beginTime").html(laydate.now(-7));
   		$("#endTime").html(laydate.now(0));

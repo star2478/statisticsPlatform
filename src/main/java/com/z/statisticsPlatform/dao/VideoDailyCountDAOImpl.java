@@ -1,11 +1,13 @@
 package com.z.statisticsPlatform.dao;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.StringUtils;
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -30,7 +32,11 @@ public class VideoDailyCountDAOImpl{
 
 	// {"videoId" : "58e27416343e55c71cc8d213", "date" : "2017-04-08", "playCount" : 5 }
 	public List<VideoDailyCountDTO> getVideoDailyCount(List<String> videoIds, String beginTime, String endTime) {
-		Criteria criteria = new Criteria().where("videoId").in(videoIds);
+		List<ObjectId> vObjectIds = new ArrayList<ObjectId>();
+		for (String videoId : videoIds) {
+			vObjectIds.add(new ObjectId(videoId));
+		}
+		Criteria criteria = new Criteria().where("videoId").in(vObjectIds);
 		if (StringUtils.isNotEmpty(beginTime) && StringUtils.isNotEmpty(endTime)) {
 			criteria.and("date").gte(beginTime).lte(endTime);
 		}

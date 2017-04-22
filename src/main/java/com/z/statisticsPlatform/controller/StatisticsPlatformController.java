@@ -64,6 +64,10 @@ public class StatisticsPlatformController {
 			logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit);
 			return new ResultInfo(ResponseUtil.param_error_code);
 		}
+		if(!checkTime(beginTime, endTime)) {
+			logger.error("between days > " + MAX_BETWEEN_DAYS + ", beginTime=" + beginTime + ", endTime=" + endTime);
+			return new ResultInfo(ResponseUtil.param_error_code, "最多允许查询" + MAX_BETWEEN_DAYS + "天内数据", null);
+		}
     	
     	if (channel != null && channel.equals("所有渠道")) {
     		channel = null;
@@ -124,19 +128,21 @@ public class StatisticsPlatformController {
 			}
 
 			GetVideoDailyCountVO result = new GetVideoDailyCountVO();
+			// 初始化返回数据
+			List<VideoDailyCountDTO> initCountList = initVideoDailyCount(beginTime, endTime);
 
 			VideoInfoDTO videoInfoDTO = videoInfoDAO.getVideoInfo(link, channel);
 			if(videoInfoDTO == null) {
-				return new ResultInfo(ResponseUtil.success_code, null);
+				return new ResultInfo(ResponseUtil.param_error_code, "找不到对应的视频:link="+link+", channel="+channel, null);
 			}
 			String videoId = videoInfoDTO.get_id();
 
-			// 初始化返回数据
-			List<VideoDailyCountDTO> initCountList = initVideoDailyCount(beginTime, endTime);
 			
 			List<String> videoIds = new ArrayList<String>();
 			videoIds.add(videoId);
 			List<VideoDailyCountDTO> videoDailyCountDTOs = videoDailyCountDAO.getVideoDailyCount(videoIds, beginTime, endTime);
+			
+			// 赋值playcount
 			for (VideoDailyCountDTO videoDailyCountDTO: videoDailyCountDTOs) {
 				String date = videoDailyCountDTO.getDate();
 				for (VideoDailyCountDTO dateVideo: initCountList) {
@@ -147,6 +153,7 @@ public class StatisticsPlatformController {
 				}
 			}
 			
+			// 计算增长率
 			result.setDailyCount(calGrowthRate(videoIds, initCountList));
 			result.setTitle(videoInfoDTO.getTitle());
 

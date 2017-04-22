@@ -33,7 +33,7 @@ public class GetVideoDailyCountVO {
 	public class VideoDailyCountSubVO {
 		private String date;	// 统计日期，精确到天，比如2017-04-01
 		private long playCount;	// videoId对应的视频在date这一天累计的播放量
-		private Float growthRate;
+		private Float growthRate;	// 增长率
 
 		public Float getGrowthRate() {
 			return growthRate;

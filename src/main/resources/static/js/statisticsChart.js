@@ -6,10 +6,10 @@ $(document).ready(function () {
     // 初始化
     function mainChartData() {
         // var storage = window.localStorage;
-        // var strategyName = storage.getItem("strategyName")
-        // var title = getUrlParam("title");
-        var link = getUrlParam("link");
-        var channel = getUrlParam("channel");
+    	var urlInfo = GetRequest();
+        var link = urlInfo["link"];//getUrlParam("link");
+        var channel = urlInfo["channel"];//getUrlParam("channel");
+        
         // var uploadTime = getUrlParam("uploadTime");
         var beginTime = $("#beginTime").html();
         var endTime = $("#endTime").html();
@@ -30,6 +30,7 @@ $(document).ready(function () {
                  endTime: endTime
              },
              dataType: 'json',
+             contentType: "application/x-www-form-urlencoded; charset=utf-8",
              success: function (data) {
                  var responseObj = eval(data);
                  if(responseObj.code == 200) {
@@ -46,12 +47,16 @@ $(document).ready(function () {
                          growthRateList.push([date, growthRate]);
                          dateList.push(date);
                      }
+                     
+                     // 绘制播放量图表
                      var jsonObj4PlayCount = {
                         name: "播放量",
                         data: playCountList
                      }
                      chartDataList4PlayCount.push(jsonObj4PlayCount);
                      drawCharts4PlayCount(chartDataList4PlayCount, dateList, responseObj.body.title);
+                     
+                     // 绘制播放增长率图表
                      var jsonObj4GrowthRate = {
                      	name: "播放增长率（如果前一天播放量为0，第二天播放量为正数，则第二天的增长率不显示）",
                         data: growthRateList
