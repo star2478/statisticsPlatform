@@ -15,18 +15,29 @@ body{
   margin:0 auto;
   height:500px;
 }
-#strategyPage{
+.itemWidth{
+  width : 33%;
+}
 
-  float: right;
+.itemVertical {
+    vertical-align: -webkit-baseline-middle;
 }
 
 .marginTop{
+  margin-top: 10px;
+}
+
+.marginTopForVideoList{
   margin-top: 20px;
 }
 
 .marginLeftAndRight{
-  margin-left: 8px;
-  margin-right: 30px;
+  margin-left: 0px;
+  margin-right: 80px;
+}
+
+.timeWidth {
+	width : 40%;
 }
 
 .alignRight{
@@ -58,3 +69,11 @@ body{
   width: 350px;
 }
 
+.itemColor{
+	color: red;
+}
+
+/* .navbar-nav>.active>a:hover */
+.navbar-nav>.active>a {
+	background-color : #31708f
+}

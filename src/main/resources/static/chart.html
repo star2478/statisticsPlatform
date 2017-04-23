@@ -16,17 +16,20 @@
 <link rel="stylesheet" type="text/css" href="css/rome.css">
 <link rel="stylesheet" type="text/css" href="css/style.css">
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+<link rel="icon" href="/static/img/favicon.ico">
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="">统计平台</a>
+				<a class="navbar-brand" href="index.html">统计平台</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
-					<li class="main-menu-li active">
-					   <a href="javascript:;" id="statisticsMain" class="main-menu">统计</a>
+					<li class="main-menu-li">
+					   <a href="javascript:;" id="statisticsMain" class="main-menu">
+					   播放量统计
+					   </a>
 					</li>
 				</ul>
 			</div>
@@ -46,7 +49,7 @@
      				
 				    <div class="form-group">
 						<a id="exportChartStatistics"  onclick="clickChartExport(this)" download="dailycount.csv" href="#">
-							<button type="button" class="btn btn-default" >导出</button>
+							<button type="button" class="btn btn-success" >导出</button>
 						</a>
 					</div>
 				</form>

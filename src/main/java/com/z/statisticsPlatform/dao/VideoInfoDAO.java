@@ -28,7 +28,7 @@ public interface VideoInfoDAO  extends MongoRepository<VideoInfoDTO, Long> {
 	 * @param endTime
 	 * @return
 	 */
-	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit, String title, String channel, String beginTime, String endTime);
+	public List<VideoInfoDTO> getVideoInfoByPage(int skip, int limit, String title, String channel, Integer sortType, String beginTime, String endTime);
 	
 	/**
 	 * 获取视频数据
@@ -38,7 +38,7 @@ public interface VideoInfoDAO  extends MongoRepository<VideoInfoDTO, Long> {
 	 * @param endTime
 	 * @return
 	 */
-	public List<VideoInfoDTO> getVideoInfos(String title, String channel, String beginTime, String endTime);
+	public List<VideoInfoDTO> getVideoInfos(String title, String channel, Integer sortType, String beginTime, String endTime);
 	
 	/**
 	 * 获取特定视频
@@ -48,5 +48,14 @@ public interface VideoInfoDAO  extends MongoRepository<VideoInfoDTO, Long> {
 	 */
 	public VideoInfoDTO getVideoInfo(String link, String channel);
 	
-	
+	/**
+	 * 获取符合条件的播放量总数
+	 * @param title
+	 * @param channel
+	 * @param sortType
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
+	public long getVideoPlayCountTotal(String title, String channel, String beginTime, String endTime);
 }

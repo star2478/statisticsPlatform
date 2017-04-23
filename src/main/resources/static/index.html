@@ -15,17 +15,20 @@
 </head>
 <link rel="stylesheet" type="text/css" href="css/style.css?vr=137">
 <link rel="stylesheet" type="text/css" href="css/jquery-ui.min.css">
+<link rel="icon" href="/static/img/favicon.ico">
 
 <body>
 	<nav class="navbar navbar-inverse navbar-fixed-top">
 		<div class="container-fluid">
 			<div class="navbar-header">
-				<a class="navbar-brand" href="">统计平台</a>
+				<a class="navbar-brand" href="index.html">统计平台</a>
 			</div>
 			<div id="navbar" class="navbar-collapse collapse">
 				<ul class="nav navbar-nav">
 					<li class="main-menu-li active">
-					   <a href="javascript:;" id="statisticsMain" class="main-menu">统计</a>
+					   <a href="javascript:;" id="statisticsMain" class="main-menu" style="background-color: #31708f;">
+					   播放量统计
+					   </a>
 					</li>
 					<!--<li class="main-menu-li ">-->
 						<!--<a href="javascript:;" id="statisticsMain" class="main-menu">统计</a>-->
@@ -37,34 +40,56 @@
 	<div id="wrapper">
 		<div id="main">
 			<div class="row marginTop">
+				
 				<div class="form-inline">
-		  			<div class="form-group marginLeftAndRight">
+		  			<div class="form-group ">
 		    			<label class="searchKeyMargin">标题</label>
-		    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索">
+		    			<input type="text" id="searchTitle" class="form-control searchValueMargin" placeholder="模糊搜索" style="width: 870px;">
 		  			</div>
-		  			<div class="form-group marginLeftAndRight">
+		  		</div>
+				<div class="form-inline marginTop">
+		  			<div class="form-group itemWidth">
 		    			<label class="searchKeyMargin">渠道</label>
-						<select id="channelList"  class="form-control searchValueMargin"></select>
+						<select id="channelList"  class="form-control" style="width: 200px;"></select>
+		  			</div>
+     				
+     				<div class="form-group itemWidth">
+		    			<label class="sortKeyMargin">排序</label>
+		    			<select id="sortType" class="form-control" style="width: 200px;">
+		    				<option value="0" selected="selected">按上传时间倒序</option>             
+		    				<option value="1">按上传时间顺序</option>             
+		    				<!-- <option value="2">按播放量倒序</option>             
+		    				<option value="3">按播放量顺序</option> -->
+		    			</select>
 		  			</div>
 		  			
-				    <div class="form-group marginLeftAndRight">
+				    <div class="form-group itemWidth ">
 		    			<label class="searchKeyMargin">时间</label>
-     					<button id="beginTime" type="button" class="btn btn-default">2017-01-01</button>
+     					<button id="beginTime" type="button" class="btn btn-default timeWidth">2017-01-01</button>
      					to
-     					<button id="endTime" type="button" class="btn btn-default">2017-01-01</button>
+     					<button id="endTime" type="button" class="btn btn-default timeWidth">2017-01-01</button>
      				</div>
      				
+     			</div>
+     			<div class="form-inline marginTop">
+     				
+				    <div class="form-group itemWidth" style="vertical-align: -webkit-baseline-middle;">
+		    			今日第<label id="crawlingTimes" class="itemColor"></label>次爬取
+     				</div>
+				    <div class="form-group itemWidth" style="vertical-align: -webkit-baseline-middle;">
+		    			符合当前条件的播放量总数：<label id="playCountTotal" class="itemColor"></label>
+     				</div>
 				    <div class="form-group alignRight">
 						
 							<a id="exportHomeStatistics"  onclick="clickHomeExport(this)" download="downlaod.csv" href="#">
 							<!-- <a id="exportHomeStatistics" download="downlaod.csv" href="#"> -->
-								<button type="button" class="btn btn-default" >导出</button>
+								<button type="button" class="btn btn-success" >导出</button>
 							</a>
 						
 					</div>
 				</div>
 			</div>
-			<div id="videoListTmpl">
+			<div id="videoListTmpl" class="marginTopForVideoList">
 			</div>
 		</div>
 	</div>
@@ -75,7 +100,7 @@
 	      	<thead>
 	        	<tr>
 	          		<th></th>
-	          		<th>标题</th>
+	          		<th class="tableTdWidth">标题</th>
 					<th>渠道</th>
 					<th>上传时间</th>
 	          		<th>累计播放量</th>
@@ -88,7 +113,7 @@
 						<td >${i+1}</td>
 	          			<td videotitle="${video.title}" videolink="${video.link}" class="tableTdWidth">
 							<a href="${video.link}" target="_black">
-								<div  class="tableTdWidth" style="word-wrap:break-word;">${video.title}</div>
+								<div style="word-wrap:break-word;">${video.title}</div>
 							</a>
 						</td>
 						<td videochannel="${video.channel}">${video.channel}</td>
@@ -128,6 +153,7 @@
     function clickHomeExport(aLink) {
 	  	var searchTitle = $('#searchTitle').val();
 	  	var channel = $("#channelList").val();
+	  	var sortType = $("#sortType").val();
 	  	var beginTime = $("#beginTime").html();
 	  	var endTime = $("#endTime").html()  + " 23:59:59"; 
 		$.ajax({
@@ -136,6 +162,7 @@
              data:{
                title : searchTitle,
                channel : channel,
+               sortType : sortType,
                beginTime : beginTime,
                endTime : endTime,
              },

@@ -34,6 +34,7 @@ import com.z.statisticsPlatform.util.ResponseUtil;
 import com.z.statisticsPlatform.util.ResultInfo;
 import com.z.statisticsPlatform.util.Utils;
 import com.z.statisticsPlatform.vo.GetVideoInfoByPageVO;
+import com.z.statisticsPlatform.vo.GetVideoPlayCountTotalVO;
 
 import ch.qos.logback.core.joran.conditional.IfAction;
 
@@ -44,25 +45,35 @@ public class VideoInfoController {
 	@Autowired
 	private VideoInfoDAO videoInfoDAO;
 
-    /**
-     * 获取视频统计数据分页数据
-     * @param pageNo
-     * @param limit
-     * @return
-     */
+	/**
+	 * 获取视频统计数据分页数据
+	 * @param pageNo
+	 * @param limit
+	 * @param title
+	 * @param channel
+	 * @param sortType
+	 * @param beginTime
+	 * @param endTime
+	 * @return
+	 */
     @RequestMapping(value = "/getVideoInfoByPage")
-    public ResultInfo getVideoInfoByPage(Integer pageNo, Integer limit, String title, String channel, String beginTime, String endTime) {
+    public ResultInfo getVideoInfoByPage(Integer pageNo, Integer limit, String title, String channel, Integer sortType, String beginTime, String endTime) {
 		logger.info(getClass().getName() + ".getVideoInfoByPage  begin");
 		try {
 	    	// 参数检查
-	    	if(pageNo == null || limit == null) {
-				logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit);
+	    	if(pageNo == null || limit == null ||
+	    		title == null || channel == null ||
+	    		sortType == null || beginTime == null || endTime == null) {
+				logger.error("param fail, pageNo=" + pageNo + ", limit=" + limit
+						 + ", title=" + title  + ", channel=" + channel + ", sortType=" + sortType 
+						 + ", beginTime=" + beginTime  + ", endTime=" + endTime);
 				return new ResultInfo(ResponseUtil.param_error_code);
 			}
-			if(!Utils.checkTime(beginTime, endTime)) {
-				logger.error("between days > " + Utils.MAX_BETWEEN_DAYS + ", beginTime=" + beginTime + ", endTime=" + endTime);
-				return new ResultInfo(ResponseUtil.param_error_code, "最多允许查询" + Utils.MAX_BETWEEN_DAYS + "天内数据", null);
-			}
+	    	ResultInfo checkTimeResult = Utils.checkTime(beginTime, endTime);
+	    	if(!checkTimeResult.getCode().equals(ResponseUtil.success_code)) {
+	    		logger.error(checkTimeResult.getMessage() + ", beginTime=" + beginTime + ", endTime=" + endTime);
+				return checkTimeResult;
+	    	}
 	    	
 	    	if (channel != null && channel.equals("所有渠道")) {
 	    		channel = null;
@@ -70,7 +81,7 @@ public class VideoInfoController {
 			
 			Integer skip = (pageNo - 1) * limit;
 			// limit+1多请求一条是为了计算是否有下一页
-			List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfoByPage(skip, limit + 1, title, channel, beginTime, endTime);
+			List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfoByPage(skip, limit + 1, title, channel, sortType, beginTime, endTime);
 	    	GetVideoInfoByPageVO result = new GetVideoInfoByPageVO();
 	    	result.setHasPrePage(((pageNo > 1) ? 1 : 0));
 	    	int hasNextPage = (videoInfoDTOs != null && videoInfoDTOs.size() > limit) ? 1 : 0;
@@ -104,20 +115,27 @@ public class VideoInfoController {
      * @return
      */
     @RequestMapping(value = "/getVideoInfoForExport")
-    public ResultInfo getVideoInfoForExport(String title, String channel, String beginTime, String endTime) {
+    public ResultInfo getVideoInfoForExport(String title, String channel, Integer sortType, String beginTime, String endTime) {
 		logger.info(getClass().getName() + ".getVideoInfoForExport  begin");
 		try {
-	    	// 参数检查
-			if(!Utils.checkTime(beginTime, endTime)) {
-				logger.error("between days > " + Utils.MAX_BETWEEN_DAYS + ", beginTime=" + beginTime + ", endTime=" + endTime);
-				return new ResultInfo(ResponseUtil.param_error_code, "最多允许查询" + Utils.MAX_BETWEEN_DAYS + "天内数据", null);
+	    	if(title == null || channel == null ||
+		    	sortType == null || beginTime == null || endTime == null) {
+				logger.error("param fail, title=" + title  + ", channel=" + channel + ", sortType=" + sortType 
+						 + ", beginTime=" + beginTime  + ", endTime=" + endTime);
+				return new ResultInfo(ResponseUtil.param_error_code);
 			}
+	    	// 参数检查
+	    	ResultInfo checkTimeResult = Utils.checkTime(beginTime, endTime);
+	    	if(!checkTimeResult.getCode().equals(ResponseUtil.success_code)) {
+	    		logger.error(checkTimeResult.getMessage() + ", beginTime=" + beginTime + ", endTime=" + endTime);
+				return checkTimeResult;
+	    	}
 	    	
 	    	if (channel != null && channel.equals("所有渠道")) {
 	    		channel = null;
 	    	}
 	
-			List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfos(title, channel, beginTime, endTime);
+			List<VideoInfoDTO> videoInfoDTOs = videoInfoDAO.getVideoInfos(title, channel, sortType, beginTime, endTime);
 	    	String result = "标题,视频链接,渠道,上传时间,累计播放量";
 	    	for (VideoInfoDTO videoInfoDTO : videoInfoDTOs) {
 				String info = "\n" + videoInfoDTO.getTitle() + "," +
@@ -129,6 +147,45 @@ public class VideoInfoController {
 			}
 			return new ResultInfo(ResponseUtil.success_code, result);
 
+		} catch (Exception e) {
+			e.printStackTrace();
+			return new ResultInfo(ResponseUtil.faile_code);
+		}
+    }
+    
+    /**
+     * 获取符合条件的播放量总数
+     * @param title
+     * @param channel
+     * @param beginTime
+     * @param endTime
+     * @return
+     */
+    @RequestMapping(value = "/getVideoPlayCountTotal")
+    public ResultInfo getVideoPlayCountTotal(String title, String channel, String beginTime, String endTime) {
+		logger.info(getClass().getName() + ".getVideoPlayCountTotal begin");
+		try {
+	    	// 参数检查
+	    	if(title == null || channel == null || beginTime == null || endTime == null) {
+				logger.error("param fail, title=" + title  + ", channel=" + channel 
+						 + ", beginTime=" + beginTime  + ", endTime=" + endTime);
+				return new ResultInfo(ResponseUtil.param_error_code);
+			}
+	    	ResultInfo checkTimeResult = Utils.checkTime(beginTime, endTime);
+	    	if(!checkTimeResult.getCode().equals(ResponseUtil.success_code)) {
+	    		logger.error(checkTimeResult.getMessage() + ", beginTime=" + beginTime + ", endTime=" + endTime);
+				return checkTimeResult;
+	    	}
+	    	
+	    	if (channel != null && channel.equals("所有渠道")) {
+	    		channel = null;
+	    	}
+			
+			long count = videoInfoDAO.getVideoPlayCountTotal(title, channel, beginTime, endTime);
+	    	GetVideoPlayCountTotalVO result = new GetVideoPlayCountTotalVO();
+	    	result.setPlayCountTotal(count);
+	    	result.setCrawlingTimes(Utils.calCrawlingTimes());
+			return new ResultInfo(ResponseUtil.success_code, result);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return new ResultInfo(ResponseUtil.faile_code);

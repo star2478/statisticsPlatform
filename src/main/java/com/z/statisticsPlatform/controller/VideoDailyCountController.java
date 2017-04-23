@@ -113,11 +113,11 @@ public class VideoDailyCountController {
 						+ endTime);
 				return new ResultInfo(ResponseUtil.param_error_code);
 			}
-			if (!Utils.checkTime(beginTime, endTime)) {
-				logger.error(
-						"between days > " + Utils.MAX_BETWEEN_DAYS + ", beginTime=" + beginTime + ", endTime=" + endTime);
-				return new ResultInfo(ResponseUtil.param_error_code, "最多允许查询" + Utils.MAX_BETWEEN_DAYS + "天内数据", null);
-			}
+	    	ResultInfo checkTimeResult = Utils.checkTime(beginTime, endTime);
+	    	if(!checkTimeResult.getCode().equals(ResponseUtil.success_code)) {
+	    		logger.error(checkTimeResult.getMessage() + ", beginTime=" + beginTime + ", endTime=" + endTime);
+				return checkTimeResult;
+	    	}
 	
 			GetVideoDailyCountVO result = new GetVideoDailyCountVO();
 			// 初始化返回数据

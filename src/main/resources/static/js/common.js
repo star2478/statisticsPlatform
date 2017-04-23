@@ -4,6 +4,7 @@ var getChannelListUrl = hostUri + "/getChannelList";
 var getVideoDailyCountUrl = hostUri + "/getVideoDailyCount";
 var getVideoInfoForExportUrl = hostUri + "/getVideoInfoForExport";
 var getVideoDailyCountForExportUrl = hostUri + "/getVideoDailyCountForExport";
+var getVideoPlayCountTotalUrl = hostUri + "/getVideoPlayCountTotal";
 var chartHtmlUrl = hostUri + "/chart.html";
 var eachPageNum = 30;
 
@@ -62,3 +63,12 @@ function GetRequest() {
 	} 
 	return theRequest; 
 } 
+
+// 点击导航栏中播放量统计tab页
+$(document).on('click','#statisticsMain',function(){
+	  jumpToPage("index.html");
+});
+
+function jumpToPage(newPageUri) {
+	window.location.href = newPageUri;
+}
