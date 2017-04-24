@@ -223,7 +223,7 @@ public class VideoDailyCountController {
 			if(curPlayCount == prePlayCount) {
 				videoDailyCountSubVO.setGrowthRate(0f);	// 如果相邻两天播放量一样，则增长率为0
 			} else if (prePlayCount == 0) {
-				videoDailyCountSubVO.setGrowthRate(null);	// 如果从0增长到正数，则增长率为null
+				videoDailyCountSubVO.setGrowthRate(100f);	// 如果从0增长到正数，则增长率为100l
 			} else {
 				String growthRateStr = decimalFormat.format((curPlayCount - prePlayCount)*100/prePlayCount);
 				videoDailyCountSubVO.setGrowthRate(Float.valueOf(growthRateStr));

@@ -52,10 +52,10 @@ function getUrlParam(name) {
 
 //获取url中的参数
 function GetRequest() { 
-	var url = location.search; //获取url中"?"符后的字串 
+	var url = location.href; //获取url
 	var theRequest = new Object(); 
 	if (url.indexOf("?") != -1) { 
-		var str = url.substr(1); 
+		var str = url.split("?").slice(1).join("?"); 
 		var strs = str.split("&&&"); 
 		for(var i = 0; i < strs.length; i ++) { 
 			theRequest[strs[i].split("=")[0]]=decodeURI(strs[i].split("=").slice(1).join("=")); 

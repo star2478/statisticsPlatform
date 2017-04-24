@@ -58,7 +58,7 @@ $(document).ready(function () {
                      
                      // 绘制播放增长率图表
                      var jsonObj4GrowthRate = {
-                     	name: "播放增长率（如果前一天播放量为0，第二天播放量为正数，则第二天的增长率不显示）",
+                     	name: "播放增长率（如果前一天播放量为0，第二天播放量为正数，则第二天的增长率为100%）",
                         data: growthRateList
                      }
                      chartDataList4GrowthRate.push(jsonObj4GrowthRate);
