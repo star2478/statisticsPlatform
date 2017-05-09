@@ -46,7 +46,10 @@ body{
 }
 
 .searchKeyMargin{
-  margin-right: 5px;
+  /* margin-right: 5px; */
+  line-height:34px;
+  width:2.4em;
+  text-align:center;
 }
 
 .searchValueMargin{
@@ -76,4 +79,29 @@ body{
 /* .navbar-nav>.active>a:hover */
 .navbar-nav>.active>a {
 	background-color : #31708f
+}
+
+.fr{
+	float:right;
+}
+
+.clearifx:after{
+	content:'.';
+	display:block;
+	height:0;
+	clear:both;
+	visibility:hidden;
+}
+.row .form-inline .titleArea{
+	display:flex;
+}
+.titleArea label{
+	margin-right:5px;
+}
+.titleArea input[type=text]{
+	flex:1;
+}
+
+.laydate_box, .laydate_box * {
+	box-sizing:content-box;
 }
